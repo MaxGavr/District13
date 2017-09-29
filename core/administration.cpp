@@ -7,3 +7,8 @@ Administration::Administration(District* district)
 
 }
 
+District* Administration::getDistrict() const
+{
+    return mDistrict;
+}
+

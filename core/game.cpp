@@ -10,3 +10,8 @@ Game::Game()
     mAdmin = new Administration(district);
 }
 
+Administration* Game::getAdministration() const
+{
+    return mAdmin;
+}
+

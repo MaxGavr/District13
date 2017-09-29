@@ -10,7 +10,7 @@ public:
         NONE = 0,
         HOUSE
     };
-    
+
     Building(Building::Type type, const std::string& name, bool populated = false);
 
     Building::Type getType() const;

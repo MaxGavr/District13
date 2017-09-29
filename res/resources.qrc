@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/res/icons">
+        <file>house.png</file>
+        <file>empty.png</file>
+    </qresource>
+</RCC>
