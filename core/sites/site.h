@@ -12,9 +12,15 @@ public:
 
     bool isOccupied() const;
     Building* getBuilding() const;
-    
+
     bool constructBuilding(Building::Type type);
+
+    void nextTurn();
+
+    HappinessFactor getPollution() const;
 
 private:
     Building* mBuilding;
+
+    HappinessFactor mPollution;
 };

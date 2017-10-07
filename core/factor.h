@@ -4,10 +4,10 @@ class HappinessFactor
 {
 public:
     HappinessFactor(int minValue = 0,
-             int maxValue = 100,
-             int step = 1,
-             int baseValue = 50,
-             int hapinessDrop = 20);
+                    int maxValue = 100,
+                    int step = 1,
+                    int baseValue = 50,
+                    int happinessImpact = 20);
 
     HappinessFactor& operator++();
     HappinessFactor& operator++(int);

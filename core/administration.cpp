@@ -12,3 +12,8 @@ District* Administration::getDistrict() const
     return mDistrict;
 }
 
+void Administration::nextTurn()
+{
+
+}
+

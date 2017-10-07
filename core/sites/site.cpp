@@ -5,9 +5,9 @@
 using namespace std;
 
 Site::Site()
-    : mBuilding(nullptr)
+    : mBuilding(nullptr),
+      mPollution(0, 100, 5, 0, 20)
 {
-    
 }
 
 bool Site::isOccupied() const
@@ -31,10 +31,21 @@ bool Site::constructBuilding(Building::Type type)
             mBuilding = nullptr;
             return true;
         case Building::Type::HOUSE:
-            mBuilding = new House();
+            mBuilding = new House(this);
             return true;
         default:
             return false;
         }
     }
+    return false;
+}
+
+void Site::nextTurn()
+{
+    ++mPollution;
+}
+
+HappinessFactor Site::getPollution() const
+{
+    return mPollution;
 }

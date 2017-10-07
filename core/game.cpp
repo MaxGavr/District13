@@ -3,7 +3,7 @@
 #include "district.h"
 
 Game::Game()
-    : mAdmin(nullptr)
+    : mAdmin(nullptr), mTurn(0)
 {
     District* district = new District(10);
 
@@ -13,5 +13,17 @@ Game::Game()
 Administration* Game::getAdministration() const
 {
     return mAdmin;
+}
+
+unsigned Game::getTurn() const
+{
+    return mTurn;
+}
+
+void Game::nextTurn()
+{
+    mAdmin->nextTurn();
+    mAdmin->getDistrict()->nextTurn();
+    ++mTurn;
 }
 

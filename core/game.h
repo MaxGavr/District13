@@ -9,6 +9,11 @@ public:
 
     Administration* getAdministration() const;
 
+    unsigned getTurn() const;
+    void nextTurn();
+
 private:
     Administration* mAdmin;
+
+    unsigned mTurn;
 };

@@ -9,6 +9,8 @@ public:
 
     District* getDistrict() const;
 
+    void nextTurn();
+
 private:
     District* mDistrict;
 };

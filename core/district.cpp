@@ -36,6 +36,16 @@ Building* District::getBuildingAt(size_t x, size_t y) const
     return getSiteAt(x, y)->getBuilding();
 }
 
+void District::nextTurn()
+{
+    for (size_t i = 0; i < getSize(); ++i)
+        for (size_t j = 0; j < getSize(); ++j)
+        {
+            getSiteAt(i, j)->nextTurn();
+            getBuildingAt(i, j)->nextTurn();
+        }
+}
+
 void District::generateDistrictMap()
 {
     if (mPopulatedPart < 0)

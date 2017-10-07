@@ -19,6 +19,8 @@ public:
     Site* getSiteAt(std::size_t x, std::size_t y) const;
     Building* getBuildingAt(std::size_t x, std::size_t y) const;
 
+    void nextTurn();
+
 private:
     void generateDistrictMap();
 

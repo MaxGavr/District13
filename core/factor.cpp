@@ -1,13 +1,13 @@
 #include "factor.h"
 
 
-HappinessFactor::HappinessFactor(int minValue,int maxValue, int step, int baseValue, int hapinessImpact)
+HappinessFactor::HappinessFactor(int minValue, int maxValue, int step, int baseValue, int happinessImpact)
     : mValue(minValue),
       mStep(step),
       mMaxValue(maxValue),
       mMinValue(minValue),
       mBaseValue(baseValue),
-      mMaxHappinessImpact(hapinessImpact)
+      mMaxHappinessImpact(happinessImpact)
 {
 
 }
@@ -55,9 +55,9 @@ void HappinessFactor::setValue(int value)
 
 int HappinessFactor::getHappinessImpact() const
 {
-    int difference = mValue - mBaseValue;
-    int maxDifference = difference < 0 ? mBaseValue - mMinValue : mMaxValue - mBaseValue;
+    const int difference = mValue - mBaseValue;
+    const int maxDifference = difference < 0 ? mBaseValue - mMinValue : mMaxValue - mBaseValue;
 
-    int happinessImpact = (difference / maxDifference) * mMaxHappinessImpact;
+    const int happinessImpact = (difference / maxDifference) * mMaxHappinessImpact;
     return happinessImpact;
 }
