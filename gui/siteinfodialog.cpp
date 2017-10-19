@@ -1,6 +1,7 @@
 #include "siteinfodialog.h"
 #include "../core/sites/house.h"
 #include "../core/sites/site.h"
+#include "minimap.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -15,6 +16,9 @@ SiteInfoDialog::SiteInfoDialog(Site* site, QWidget* parent)
       mBuildingInfo(nullptr),
       mSiteInfo(nullptr)
 {   
+    Building::Type type = site->getBuilding() ? site->getBuilding()->getType() : Building::Type::NONE;
+    setWindowTitle(DistrictMinimap::getBuildingTitle(type));
+
     fillSiteInfo();
     fillBuildingInfo();
     fillPopulationInfo();
@@ -29,7 +33,7 @@ SiteInfoDialog::SiteInfoDialog(Site* site, QWidget* parent)
     mOkButton->setDefault(true);
     connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    mainLayout->addWidget(mOkButton, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mOkButton, 0, Qt::AlignRight);
     setLayout(mainLayout);
 }
 

@@ -13,10 +13,9 @@ public:
         HOUSE
     };
 
-    Building(Site* site, Building::Type type, const std::string& name, bool populated = false);
+    Building(Site* site, Building::Type type, bool populated = false);
 
     Building::Type getType() const;
-    std::string getName() const;
     bool isPopulated() const;
 
     HappinessFactor getCondition() const;
@@ -28,7 +27,6 @@ protected:
 
 private:
     Building::Type mType;
-    std::string mName;
 
     bool mIsPopulated;
 

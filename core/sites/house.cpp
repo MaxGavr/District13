@@ -3,7 +3,7 @@
 
 
 House::House(Site* site)
-    : Building(site, Building::Type::HOUSE, "house", true),
+    : Building(site, Building::Type::HOUSE, true),
       mHappiness(getBaseHappiness())
 {
 

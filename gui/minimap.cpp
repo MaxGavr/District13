@@ -10,6 +10,16 @@
 
 using namespace std;
 
+const DistrictMinimap::BuildingTypeToImageMap DistrictMinimap::mImageMap = {
+    { Building::Type::NONE, ":/res/icons/empty" },
+    { Building::Type::HOUSE, ":/res/icons/house" }
+};
+
+const DistrictMinimap::BuildingTypeToTitleMap DistrictMinimap::mTitleMap = {
+    { Building::Type::NONE, tr("Пустырь") },
+    { Building::Type::HOUSE, tr("Жилой дом") }
+};
+
 DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)
     : QWidget(parent),
       mDistrict(district)
@@ -17,8 +27,6 @@ DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)
 {
     Q_ASSERT(mDistrict);
     mMapSize = mDistrict->getSize();
-
-    initializeTypeToPictureMap();
 
     mMinimap = Minimap(mMapSize, MinimapRow(mMapSize, nullptr));
 
@@ -60,37 +68,34 @@ void DistrictMinimap::updateMinimapPictures()
         for (size_t j = 0; j < mMapSize; ++j)
         {
             Building* building = mDistrict->getBuildingAt(i, j);
-            string type = building ? building->getName() : "";
-            QPixmap sitePicture = getPictureByBuildingType(type);
+            QPixmap sitePicture = getBuildingImage(building->getType());
             mMinimap.at(i).at(j)->setIcon(QIcon(sitePicture));
         }
     }
 }
 
-QPixmap DistrictMinimap::getPictureByBuildingType(const std::string& type)
+QPixmap DistrictMinimap::getBuildingImage(Building::Type type)
 {
     BuildingTypeToImageMap::const_iterator it;
-    it = mTypeMap.find(type);
-    if (it != mTypeMap.cend())
-        return it->second;
+    it = mImageMap.find(type);
+    if (it != mImageMap.cend())
+        return QPixmap(it->second);
     else
-        return mTypeMap.find("")->second;
+        return QPixmap(mImageMap.find(Building::Type::NONE)->second);
 }
 
-void DistrictMinimap::initializeTypeToPictureMap()
+QString DistrictMinimap::getBuildingTitle(Building::Type type)
 {
-    mTypeMap.clear();
-
-    QPixmap pixmap;
-    pixmap.load(":/res/icons/empty");
-    mTypeMap.insert(pair<string, QPixmap>("", pixmap));
-    QPixmap pix;
-    pix.load(":/res/icons/house");
-    mTypeMap.insert(pair<string, QPixmap>("house", pix));
+    BuildingTypeToTitleMap::const_iterator it;
+    it = mTitleMap.find(type);
+    if (it != mTitleMap.cend())
+        return it->second;
+    else
+        return QString("");
 }
 
 DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
-    : QPushButton(minimap), mSite(site), mMinimap(minimap)
+    : QPushButton(minimap), mMinimap(minimap), mSite(site)
 {
     const QSize pictureSize = QSize(64, 64);
 
@@ -114,7 +119,8 @@ Site* DistrictMinimapItem::getSite() const
 
 QPixmap DistrictMinimapItem::getPicture() const
 {
-    const std::string buildingType = mSite->getBuilding() ? mSite->getBuilding()->getName() : "";
+    using Type = Building::Type;
+    const Type type = mSite->getBuilding() ? mSite->getBuilding()->getType() : Type::NONE;
 
-    return mMinimap->getPictureByBuildingType(buildingType);
+    return DistrictMinimap::getBuildingImage(type);
 }

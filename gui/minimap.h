@@ -18,11 +18,13 @@ public:
     using MinimapRow = std::vector<DistrictMinimapItem*>;
     using Minimap = std::vector<MinimapRow>;
 
-    using BuildingTypeToImageMap = std::map<std::string, QPixmap>;
+    using BuildingTypeToImageMap = std::map<Building::Type, QString>;
+    using BuildingTypeToTitleMap = std::map<Building::Type, QString>;
 
     DistrictMinimap(District* district, QWidget *parent = 0);
 
-    QPixmap getPictureByBuildingType(const std::string& type);
+    static QPixmap getBuildingImage(Building::Type type);
+    static QString getBuildingTitle(Building::Type type);
 
 public slots:
     void onSiteInfoShow();
@@ -31,11 +33,11 @@ private:
     void setupLayout();
     void updateMinimapPictures();
 
-    void initializeTypeToPictureMap();
+    static const BuildingTypeToImageMap mImageMap;
+    static const BuildingTypeToTitleMap mTitleMap;
 
     size_t mMapSize;
     Minimap mMinimap;
-    BuildingTypeToImageMap mTypeMap;
 
 private:
     District* mDistrict;
