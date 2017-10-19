@@ -18,6 +18,8 @@ public:
     int getValue() const;
     void setValue(int value);
 
+    int getMaxValue() const;
+
     int getHappinessImpact() const;
 
 private:

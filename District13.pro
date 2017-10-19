@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     core/sites/site.cpp \
     core/sites/house.cpp \
     gui/minimap.cpp \
-    core/factor.cpp
+    core/factor.cpp \
+    gui/siteinfodialog.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/game.h \
@@ -33,7 +34,8 @@ HEADERS  += gui/mainwindow.h \
     core/sites/site.h \
     core/sites/house.h \
     gui/minimap.h \
-    core/factor.h
+    core/factor.h \
+    gui/siteinfodialog.h
 
 RESOURCES += \
     res/resources.qrc

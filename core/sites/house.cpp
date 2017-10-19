@@ -9,6 +9,11 @@ House::House(Site* site)
 
 }
 
+int House::getHappiness() const
+{
+    return mHappiness;
+}
+
 std::vector<HappinessFactor> House::getFactors() const
 {
     std::vector<HappinessFactor> factors;

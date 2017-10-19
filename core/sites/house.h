@@ -12,6 +12,8 @@ public:
     inline int getMaxHappiness() const { return 100; }
     inline int getBaseHappiness() const { return 50; }
 
+    int getHappiness() const;
+
     std::vector<HappinessFactor> getFactors() const;
     void calculateHappiness();
 

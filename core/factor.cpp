@@ -53,6 +53,11 @@ void HappinessFactor::setValue(int value)
         mValue = value;
 }
 
+int HappinessFactor::getMaxValue() const
+{
+    return mMaxValue;
+}
+
 int HappinessFactor::getHappinessImpact() const
 {
     const int difference = mValue - mBaseValue;
