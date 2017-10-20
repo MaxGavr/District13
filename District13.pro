@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     core/sites/house.cpp \
     gui/minimap.cpp \
     core/factor.cpp \
-    gui/siteinfodialog.cpp
+    gui/siteinfodialog.cpp \
+    core/events/event.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/game.h \
@@ -35,7 +36,8 @@ HEADERS  += gui/mainwindow.h \
     core/sites/house.h \
     gui/minimap.h \
     core/factor.h \
-    gui/siteinfodialog.h
+    gui/siteinfodialog.h \
+    core/events/event.h
 
 RESOURCES += \
     res/resources.qrc
