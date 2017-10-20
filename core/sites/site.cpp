@@ -4,10 +4,16 @@
 
 using namespace std;
 
-Site::Site()
-    : mBuilding(nullptr),
+Site::Site(int posX, int posY)
+    : mAddress({posX, posY}),
+      mBuilding(nullptr),
       mPollution(0, 100, 5, 0, 20)
 {
+}
+
+Site::Address Site::getAddress() const
+{
+    return mAddress;
 }
 
 bool Site::isOccupied() const

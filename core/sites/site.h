@@ -8,7 +8,11 @@
 class Site
 {
 public:
-    Site();
+    using Address = std::pair<int, int>;
+
+    Site(int posX, int posY);
+
+    Address getAddress() const;
 
     bool isOccupied() const;
     Building* getBuilding() const;
@@ -20,6 +24,8 @@ public:
     HappinessFactor getPollution() const;
 
 private:
+    Address mAddress;
+
     Building* mBuilding;
 
     HappinessFactor mPollution;

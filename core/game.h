@@ -8,7 +8,7 @@ class Administration;
 class Game
 {
 public:
-    using EventQueue = std::queue<Event>;
+    using EventQueue = std::queue<Event*>;
 
     Game();
 

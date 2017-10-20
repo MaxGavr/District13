@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     gui/minimap.cpp \
     core/factor.cpp \
     gui/siteinfodialog.cpp \
-    core/events/event.cpp
+    core/events/event.cpp \
+    gui/eventlogger.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/game.h \
@@ -37,7 +38,8 @@ HEADERS  += gui/mainwindow.h \
     gui/minimap.h \
     core/factor.h \
     gui/siteinfodialog.h \
-    core/events/event.h
+    core/events/event.h \
+    gui/eventlogger.h
 
 RESOURCES += \
     res/resources.qrc

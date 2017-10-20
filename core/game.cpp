@@ -28,10 +28,10 @@ void Game::nextTurn()
     // execute environment events
     while (!mEvents.empty())
     {
-        Event event = mEvents.front();
-        if (event.canBeExecuted())
+        Event* event = mEvents.front();
+        if (event->canBeExecuted())
         {
-            event.execute();
+            event->execute();
             // TODO: log events
         }
         mEvents.pop();
@@ -40,10 +40,10 @@ void Game::nextTurn()
     // execute user events
     while (!mUserEvents.empty())
     {
-        Event userEvent = mUserEvents.front();
-        if (userEvent.canBeExecuted())
+        Event* userEvent = mUserEvents.front();
+        if (userEvent->canBeExecuted())
         {
-            userEvent.execute();
+            userEvent->execute();
             // TODO: log events
         }
         mUserEvents.pop();

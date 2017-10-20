@@ -7,9 +7,10 @@ District::District(size_t districtSize, float populatedPart)
     : mSize(districtSize), mPopulatedPart(populatedPart)
 {
     mMap = DistrictMap(mSize, SiteRow(mSize, nullptr));
-    for (SiteRow& row : mMap)
-        for (Site*& site : row)
-            site = new Site();
+
+    for (size_t i = 0; i < mSize; ++i)
+        for (size_t j = 0; j < mSize; ++j)
+            mMap.at(i).at(j) = new Site(i, j);
 
     generateDistrictMap();
 }

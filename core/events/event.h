@@ -10,15 +10,22 @@ class Site;
 class Event
 {
 public:
-    Event(bool calledByUser = false);
+    enum class Type {
+        Undefined,
+        Construction
+    };
 
-    virtual void execute() = 0;
-    bool canBeExecuted() const = 0;
+    Event(Type type, bool calledByUser = false);
 
+    Type getType() const;
     bool isInitializedByUser() const;
 
+    virtual bool canBeExecuted() const = 0;
+    virtual void execute() = 0;
+
 private:
-    bool mUser;
+    const Type mType;
+    const bool mUser;
 };
 
 class ConstructionEvent : public Event
@@ -28,6 +35,9 @@ public:
 
     virtual void execute();
     bool canBeExecuted() const;
+
+    Site* getSite() const;
+    Building::Type getBuildingType() const;
 
 private:
     Site* mSite;
