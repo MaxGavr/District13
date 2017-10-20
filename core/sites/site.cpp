@@ -42,6 +42,8 @@ bool Site::constructBuilding(Building::Type type)
 
 void Site::nextTurn()
 {
+    if (mBuilding)
+        mBuilding->nextTurn();
     ++mPollution;
 }
 

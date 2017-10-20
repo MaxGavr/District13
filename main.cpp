@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     Game game;
 
-    MainWindow w(game.getAdministration()->getDistrict());
+    MainWindow w(&game);
     w.show();
 
     return a.exec();

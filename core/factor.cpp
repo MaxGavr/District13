@@ -2,7 +2,7 @@
 
 
 HappinessFactor::HappinessFactor(int minValue, int maxValue, int step, int baseValue, int happinessImpact)
-    : mValue(minValue),
+    : mValue(baseValue),
       mStep(step),
       mMaxValue(maxValue),
       mMinValue(minValue),
@@ -63,6 +63,6 @@ int HappinessFactor::getHappinessImpact() const
     const int difference = mValue - mBaseValue;
     const int maxDifference = difference < 0 ? mBaseValue - mMinValue : mMaxValue - mBaseValue;
 
-    const int happinessImpact = (difference / maxDifference) * mMaxHappinessImpact;
+    const int happinessImpact = ((double)difference / maxDifference) * mMaxHappinessImpact;
     return happinessImpact;
 }

@@ -1,18 +1,31 @@
 #pragma once
 
-#include <QMainWindow>
+#include <QWidget>
 
 class DistrictMinimap;
-class District;
+class Game;
+class QPushButton;
 
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(District* district, QWidget *parent = 0);
+    MainWindow(Game* game, QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void onNextTurn();
+
 private:
+    void initializeWidgets();
+    void setupLayout();
+
+    void updateTurnNumber();
+
+    Game* mGame;
+
     DistrictMinimap* mMinimapWidget;
+
+    QPushButton* mNextTurnButton;
 };
