@@ -97,7 +97,7 @@ QString DistrictMinimap::getBuildingTitle(Building::Type type)
 DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
     : QPushButton(minimap), mMinimap(minimap), mSite(site)
 {
-    const QSize pictureSize = QSize(64, 64);
+    const QSize pictureSize = QSize(54, 54);
 
     setContentsMargins(0, 0, 0, 0);
     setMinimumSize(pictureSize);

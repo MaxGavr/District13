@@ -1,10 +1,12 @@
 #pragma once
 
+#include "eventlogger.h"
 #include <QWidget>
 
 class DistrictMinimap;
 class Game;
 class QPushButton;
+class QTextEdit;
 
 class MainWindow : public QWidget
 {
@@ -13,6 +15,8 @@ class MainWindow : public QWidget
 public:
     MainWindow(Game* game, QWidget *parent = 0);
     ~MainWindow();
+
+    void printTurnSummary();
 
 public slots:
     void onNextTurn();
@@ -23,9 +27,13 @@ private:
 
     void updateTurnNumber();
 
+    void printMessage(const QString& message);
+    void printMessage(const EventLogger::EventSummary& summary);
+
+private:
     Game* mGame;
 
     DistrictMinimap* mMinimapWidget;
-
+    QTextEdit* mLogWidget;
     QPushButton* mNextTurnButton;
 };

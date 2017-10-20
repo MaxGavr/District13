@@ -10,6 +10,8 @@ class Site;
 class Event
 {
 public:
+    friend class Game;
+
     enum class Type {
         Undefined,
         Construction
@@ -21,9 +23,10 @@ public:
     bool isInitializedByUser() const;
 
     virtual bool canBeExecuted() const = 0;
-    virtual void execute() = 0;
 
 private:
+    virtual void execute() = 0;
+
     const Type mType;
     const bool mUser;
 };
@@ -33,13 +36,14 @@ class ConstructionEvent : public Event
 public:
     ConstructionEvent(Site* site, Building::Type newBuilding);
 
-    virtual void execute();
     bool canBeExecuted() const;
 
     Site* getSite() const;
     Building::Type getBuildingType() const;
 
 private:
+    virtual void execute();
+
     Site* mSite;
     Building::Type mBuildingType;
 };

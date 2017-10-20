@@ -26,28 +26,24 @@ void Game::nextTurn()
     mAdmin->getDistrict()->nextTurn();
 
     // execute environment events
-    while (!mEvents.empty())
-    {
-        Event* event = mEvents.front();
+    for (Event* event : mEvents)
         if (event->canBeExecuted())
-        {
             event->execute();
-            // TODO: log events
-        }
-        mEvents.pop();
-    }
 
     // execute user events
-    while (!mUserEvents.empty())
-    {
-        Event* userEvent = mUserEvents.front();
-        if (userEvent->canBeExecuted())
-        {
-            userEvent->execute();
-            // TODO: log events
-        }
-        mUserEvents.pop();
-    }
+    for (Event* event : mUserEvents)
+        if (event->canBeExecuted())
+            event->execute();
 
     ++mTurn;
+}
+
+Game::EventQueue Game::getEvents() const
+{
+    return mEvents;
+}
+
+Game::EventQueue Game::getUserEvents() const
+{
+    return mUserEvents;
 }

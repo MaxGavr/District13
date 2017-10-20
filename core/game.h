@@ -1,6 +1,6 @@
 #pragma once
 
-#include <queue>
+#include <forward_list>
 #include "events/event.h"
 
 class Administration;
@@ -8,7 +8,7 @@ class Administration;
 class Game
 {
 public:
-    using EventQueue = std::queue<Event*>;
+    using EventQueue = std::forward_list<Event*>;
 
     Game();
 
@@ -16,6 +16,9 @@ public:
 
     unsigned getTurn() const;
     void nextTurn();
+
+    EventQueue getEvents() const;
+    EventQueue getUserEvents() const;
 
 private:
     Administration* mAdmin;
