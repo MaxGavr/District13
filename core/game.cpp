@@ -22,28 +22,41 @@ unsigned Game::getTurn() const
 
 void Game::nextTurn()
 {
+    mExecutedEvents.clear();
+
     mAdmin->nextTurn();
     mAdmin->getDistrict()->nextTurn();
 
     // execute environment events
     for (Event* event : mEvents)
         if (event->canBeExecuted())
+        {
             event->execute();
+            mExecutedEvents.push_front(event);
+        }
+    mEvents.clear();
 
     // execute user events
     for (Event* event : mUserEvents)
         if (event->canBeExecuted())
+        {
             event->execute();
+            mExecutedEvents.push_front(event);
+        }
+    mUserEvents.clear();
 
     ++mTurn;
 }
 
-Game::EventQueue Game::getEvents() const
+Game::EventQueue Game::getExecutedEvents() const
 {
-    return mEvents;
+    return mExecutedEvents;
 }
 
-Game::EventQueue Game::getUserEvents() const
+void Game::enqueueEvent(Event* event)
 {
-    return mUserEvents;
+    if (event->isInitializedByUser())
+        mUserEvents.push_front(event);
+    else
+        mEvents.push_front(event);
 }

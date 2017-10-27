@@ -17,14 +17,16 @@ public:
     unsigned getTurn() const;
     void nextTurn();
 
-    EventQueue getEvents() const;
-    EventQueue getUserEvents() const;
+    EventQueue getExecutedEvents() const;
+    void enqueueEvent(Event* event);
 
 private:
     Administration* mAdmin;
 
     EventQueue mEvents;
     EventQueue mUserEvents;
+
+    EventQueue mExecutedEvents;
 
     unsigned mTurn;
 };

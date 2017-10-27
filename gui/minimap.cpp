@@ -1,8 +1,11 @@
 #include "minimap.h"
 #include "siteinfodialog.h"
+
+#include "../core/administration.h"
 #include "../core/district.h"
 #include "../core/sites/site.h"
 #include "../core/sites/house.h"
+#include "../core/events/event.h"
 
 #include <QIcon>
 #include <QPushButton>
@@ -43,7 +46,19 @@ void DistrictMinimap::onSiteInfoShow()
     Site* site = item->getSite();
 
     SiteInfoDialog dialog(site, this);
+    connect(&dialog, SIGNAL(buildEvent(Building::Type)), this, SLOT(onBuild(Building::Type)));
+
     dialog.exec();
+}
+
+void DistrictMinimap::onBuild(Building::Type type)
+{   
+    const Site* site = qobject_cast<SiteInfoDialog*>(QObject::sender())->getSite();
+
+    const Site::Address address = site->getAddress();
+    Event* event = mDistrict->getAdministration()->constructBuilding(address.first, address.second, type);
+
+    buildEvent(event);
 }
 
 void DistrictMinimap::setupLayout()

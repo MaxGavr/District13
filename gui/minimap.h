@@ -9,6 +9,7 @@
 class District;
 class DistrictMinimapItem;
 class Site;
+class Event;
 
 
 class DistrictMinimap : public QWidget
@@ -29,8 +30,12 @@ public:
 
     void updateMinimap();
 
+signals:
+    void buildEvent(Event* event);
+
 public slots:
     void onSiteInfoShow();
+    void onBuild(Building::Type type);
 
 private:
     void setupLayout();

@@ -21,6 +21,8 @@ public:
 public slots:
     void onNextTurn();
 
+    void onEnqueueEvent(Event* event);
+
 private:
     void initializeWidgets();
     void setupLayout();

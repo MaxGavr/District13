@@ -15,7 +15,9 @@ public:
     EventLogger();
 
     EventSummary getEventLog(const Event& event) const;
+    EventSummary getEventPreview(const Event& event) const;
 
 private:
-    EventSummary logConstructionEvent(const ConstructionEvent& event) const;
+    EventSummary logConstructionEvent(const ConstructionEvent& event,
+                                      bool preview = false) const;
 };

@@ -22,7 +22,23 @@ EventLogger::EventSummary EventLogger::getEventLog(const Event& event) const
     }
 }
 
-EventLogger::EventSummary EventLogger::logConstructionEvent(const ConstructionEvent& event) const
+EventLogger::EventSummary EventLogger::getEventPreview(const Event& event) const
+{
+    switch (event.getType())
+    {
+    case Event::Type::Undefined:
+        return EventSummary();
+
+    case Event::Type::Construction:
+        return logConstructionEvent(dynamic_cast<const ConstructionEvent&>(event), true);
+
+    default:
+        return EventSummary();
+    }
+}
+
+EventLogger::EventSummary EventLogger::logConstructionEvent(const ConstructionEvent& event,
+                                                            bool preview) const
 {
     EventSummary summary;
 
@@ -30,13 +46,22 @@ EventLogger::EventSummary EventLogger::logConstructionEvent(const ConstructionEv
     Site::Address address = site->getAddress();
 
     QString title = DistrictMinimap::getBuildingTitle(event.getBuildingType());
-    summary.append(
-                tr("На участке ") +
-                QString::number(address.first) +
-                "-" +
-                QString::number(address.second) +
-                tr("завершилось строительство ") +
-                title);
+
+    if (preview)
+        summary.append(tr("На участке ") +
+                       QString::number(address.first) +
+                       "-" +
+                       QString::number(address.second) +
+                       tr(" началось строительство ") +
+                       title);
+    else
+        summary.append(
+                    tr("На участке ") +
+                    QString::number(address.first) +
+                    "-" +
+                    QString::number(address.second) +
+                    tr(" завершилось строительство ") +
+                    title);
     return summary;
 }
 

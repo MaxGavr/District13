@@ -1,6 +1,7 @@
 # pragma once
 
 #include <QDialog>
+#include "../core/sites/building.h"
 
 class Site;
 class QLabel;
@@ -13,6 +14,14 @@ class SiteInfoDialog : public QDialog
 public:
     SiteInfoDialog(Site* site, QWidget* parent = 0);
 
+    Site* getSite() const;
+
+signals:
+    void buildEvent(Building::Type type);
+
+private slots:
+    void onShowBuildDialog();
+
 private:
     void fillPopulationInfo();
     void fillBuildingInfo();
@@ -22,6 +31,7 @@ private:
 
     QLabel* mHappinessLabel;
     QPushButton* mOkButton;
+    QPushButton* mBuildButton;
 
     QGroupBox* mPopulationInfo;
     QGroupBox* mBuildingInfo;

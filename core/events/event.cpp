@@ -30,7 +30,8 @@ ConstructionEvent::ConstructionEvent(Site* site, Building::Type newBuilding)
       mSite(site),
       mBuildingType(newBuilding)
 {
-
+    if (mSite)
+        mSite->mPendingConstruction = true;
 }
 
 void ConstructionEvent::execute()
@@ -40,7 +41,7 @@ void ConstructionEvent::execute()
 
 bool ConstructionEvent::canBeExecuted() const
 {
-    return mSite && !mSite->getBuilding();
+    return mSite && !mSite->isOccupied();
 }
 
 Site* ConstructionEvent::getSite() const

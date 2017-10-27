@@ -8,6 +8,7 @@ using namespace std;
 Site::Site(int posX, int posY)
     : mAddress({posX, posY}),
       mBuilding(nullptr),
+      mPendingConstruction(false),
       mPollution(0, 100, 5, 0, 20)
 {
 }
@@ -20,6 +21,11 @@ Site::Address Site::getAddress() const
 bool Site::isOccupied() const
 {
     return mBuilding;
+}
+
+bool Site::isPendingConstruction() const
+{
+    return mPendingConstruction;
 }
 
 Building* Site::getBuilding() const
@@ -60,6 +66,10 @@ bool Site::constructBuilding(Building::Type type)
             success = false;
             break;
         }
+
+        if (success)
+            mPendingConstruction = false;
+
         return success;
     }
     return false;

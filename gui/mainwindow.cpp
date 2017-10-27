@@ -24,16 +24,28 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::onNextTurn()
-{
+{   
     mGame->nextTurn();
+
     printMessage(tr("Ход ") + QString::number(mGame->getTurn()));
     updateTurnNumber();
+
+    printTurnSummary();
     mMinimapWidget->updateMinimap();
+}
+
+void MainWindow::onEnqueueEvent(Event* event)
+{
+    mGame->enqueueEvent(event);
+
+    EventLogger logger;
+    printMessage(logger.getEventPreview(*event));
 }
 
 void MainWindow::initializeWidgets()
 {
     mMinimapWidget = new DistrictMinimap(mGame->getAdministration()->getDistrict(), this);
+    connect(mMinimapWidget, SIGNAL(buildEvent(Event*)), this, SLOT(onEnqueueEvent(Event*)));
 
     mLogWidget = new QTextEdit(tr("Добро пожаловать в Район №13!"));
     mLogWidget->setReadOnly(true);
@@ -75,11 +87,7 @@ void MainWindow::printTurnSummary()
 {
     EventLogger logger;
 
-    Game::EventQueue userEvents = mGame->getUserEvents();
-    for (Event* event : userEvents)
-        printMessage(logger.getEventLog(*event));
-
-    Game::EventQueue events = mGame->getEvents();
+    Game::EventQueue events = mGame->getExecutedEvents();
     for (Event* event : events)
         printMessage(logger.getEventLog(*event));
 }

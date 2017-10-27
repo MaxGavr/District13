@@ -4,7 +4,8 @@
 using namespace std;
 
 District::District(size_t districtSize, float populatedPart)
-    : mSize(districtSize), mPopulatedPart(populatedPart)
+    : mSize(districtSize),
+      mPopulatedPart(populatedPart)
 {
     mMap = DistrictMap(mSize, SiteRow(mSize, nullptr));
 
@@ -27,6 +28,16 @@ size_t District::getSize() const
     return mSize;
 }
 
+void District::setAdministration(Administration* admin)
+{
+    mAdmin = admin;
+}
+
+Administration* District::getAdministration() const
+{
+    return mAdmin;
+}
+
 Site* District::getSiteAt(size_t x, size_t y) const
 {
     return mMap.at(x).at(y);
@@ -42,6 +53,16 @@ void District::nextTurn()
     for (size_t i = 0; i < getSize(); ++i)
         for (size_t j = 0; j < getSize(); ++j)
             getSiteAt(i, j)->nextTurn();
+}
+
+void District::updateBuildingsInfluenceAreas()
+{
+//    for (size_t i = 0; i < getSize(); ++i)
+//        for (size_t j = 0; j < getSize(); ++j)
+//        {
+//            Building* building = getBuildingAt(i, j);
+//            if (building && building->isPublic())
+//        }
 }
 
 void District::generateDistrictMap()
