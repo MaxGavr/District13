@@ -1,6 +1,7 @@
 #include "site.h"
 
 #include "house.h"
+#include "publicbuilding.h"
 
 using namespace std;
 
@@ -27,21 +28,39 @@ Building* Site::getBuilding() const
 }
 
 bool Site::constructBuilding(Building::Type type)
-{
+{   
     if (!isOccupied())
     {
+        bool success;
+
         // TODO: replace with Factory
         switch (type)
         {
         case Building::Type::NONE:
             mBuilding = nullptr;
-            return true;
+            success = true;
+            break;
         case Building::Type::HOUSE:
             mBuilding = new House(this);
-            return true;
+            success = true;
+            break;
+        case Building::Type::SHOP:
+            mBuilding = new PublicBuilding(this, PublicBuilding::Type::SHOP);
+            success = true;
+            break;
+        case Building::Type::SCHOOL:
+            mBuilding = new PublicBuilding(this, PublicBuilding::Type::SCHOOL);
+            success = true;
+            break;
+        case Building::Type::PARK:
+            mBuilding = new PublicBuilding(this, PublicBuilding::Type::PARK);
+            success = true;
+            break;
         default:
-            return false;
+            success = false;
+            break;
         }
+        return success;
     }
     return false;
 }

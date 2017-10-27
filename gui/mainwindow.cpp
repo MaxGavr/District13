@@ -28,13 +28,14 @@ void MainWindow::onNextTurn()
     mGame->nextTurn();
     printMessage(tr("Ход ") + QString::number(mGame->getTurn()));
     updateTurnNumber();
+    mMinimapWidget->updateMinimap();
 }
 
 void MainWindow::initializeWidgets()
 {
     mMinimapWidget = new DistrictMinimap(mGame->getAdministration()->getDistrict(), this);
 
-    mLogWidget = new QTextEdit(tr("Добро пожаловать в Район №13! Удачи, она вам понадобится..."));
+    mLogWidget = new QTextEdit(tr("Добро пожаловать в Район №13!"));
     mLogWidget->setReadOnly(true);
 
     mNextTurnButton = new QPushButton(tr("Следующий ход"));

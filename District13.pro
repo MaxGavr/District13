@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     core/factor.cpp \
     gui/siteinfodialog.cpp \
     core/events/event.cpp \
-    gui/eventlogger.cpp
+    gui/eventlogger.cpp \
+    core/sites/publicbuilding.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/game.h \
@@ -39,7 +40,8 @@ HEADERS  += gui/mainwindow.h \
     core/factor.h \
     gui/siteinfodialog.h \
     core/events/event.h \
-    gui/eventlogger.h
+    gui/eventlogger.h \
+    core/sites/publicbuilding.h
 
 RESOURCES += \
     res/resources.qrc

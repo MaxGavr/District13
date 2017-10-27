@@ -2,6 +2,9 @@
 
 #include "building.h"
 #include <vector>
+#include <list>
+
+class PublicBuilding;
 
 class House : public Building
 {
@@ -14,12 +17,15 @@ public:
 
     int getHappiness() const;
 
+    void addPublicBuilding(PublicBuilding* building);
     std::vector<HappinessFactor> getFactors() const;
     void calculateHappiness();
 
     void nextTurn();
 
 private:
+    std::list<PublicBuilding*> mNearestBuildings;
+
     int mBaseHappiness;
     int mHappiness;
 };

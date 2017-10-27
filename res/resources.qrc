@@ -2,5 +2,7 @@
     <qresource prefix="/res/icons">
         <file>house.png</file>
         <file>empty.png</file>
+        <file>school.png</file>
+        <file>shop.png</file>
     </qresource>
 </RCC>

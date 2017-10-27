@@ -12,12 +12,16 @@ using namespace std;
 
 const DistrictMinimap::BuildingTypeToImageMap DistrictMinimap::mImageMap = {
     { Building::Type::NONE, ":/res/icons/empty" },
-    { Building::Type::HOUSE, ":/res/icons/house" }
+    { Building::Type::HOUSE, ":/res/icons/house" },
+    { Building::Type::SHOP, ":/res/icons/shop" },
+    { Building::Type::SCHOOL, ":/res/icons/school" }
 };
 
 const DistrictMinimap::BuildingTypeToTitleMap DistrictMinimap::mTitleMap = {
     { Building::Type::NONE, tr("Пустырь") },
-    { Building::Type::HOUSE, tr("Жилой дом") }
+    { Building::Type::HOUSE, tr("Жилой дом") },
+    { Building::Type::SHOP, tr("Магазин") },
+    { Building::Type::SCHOOL, tr("Школа") }
 };
 
 DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)
@@ -31,7 +35,6 @@ DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)
     mMinimap = Minimap(mMapSize, MinimapRow(mMapSize, nullptr));
 
     setupLayout();
-    //updateMinimapPictures();
 }
 
 void DistrictMinimap::onSiteInfoShow()
@@ -53,23 +56,21 @@ void DistrictMinimap::setupLayout()
     {
         for (size_t j = 0; j < mMapSize; ++j)
         {
-            DistrictMinimapItem* item = mMinimap.at(i).at(j);
-
-            item = new DistrictMinimapItem(mDistrict->getSiteAt(i, j), this);
-            layout->addWidget(item, i, j, 1, 1);
+            mMinimap.at(i).at(j) = new DistrictMinimapItem(mDistrict->getSiteAt(i, j), this);
+            layout->addWidget(mMinimap.at(i).at(j), i, j, 1, 1);
         }
     }
 }
 
-void DistrictMinimap::updateMinimapPictures()
+void DistrictMinimap::updateMinimap()
 {
     for (size_t i = 0; i < mMapSize; ++i)
     {
         for (size_t j = 0; j < mMapSize; ++j)
         {
             Building* building = mDistrict->getBuildingAt(i, j);
-            QPixmap sitePicture = getBuildingImage(building->getType());
-            mMinimap.at(i).at(j)->setIcon(QIcon(sitePicture));
+            QIcon icon = QIcon(getBuildingImage(building));
+            mMinimap.at(i).at(j)->setIcon(icon);
         }
     }
 }
@@ -82,6 +83,11 @@ QPixmap DistrictMinimap::getBuildingImage(Building::Type type)
         return QPixmap(it->second);
     else
         return QPixmap(mImageMap.find(Building::Type::NONE)->second);
+}
+
+QPixmap DistrictMinimap::getBuildingImage(const Building* building)
+{
+    return getBuildingImage(building ? building->getType() : Building::Type::NONE);
 }
 
 QString DistrictMinimap::getBuildingTitle(Building::Type type)

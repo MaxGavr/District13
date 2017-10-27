@@ -24,14 +24,16 @@ public:
     DistrictMinimap(District* district, QWidget *parent = 0);
 
     static QPixmap getBuildingImage(Building::Type type);
+    static QPixmap getBuildingImage(const Building* building);
     static QString getBuildingTitle(Building::Type type);
+
+    void updateMinimap();
 
 public slots:
     void onSiteInfoShow();
 
 private:
     void setupLayout();
-    void updateMinimapPictures();
 
     static const BuildingTypeToImageMap mImageMap;
     static const BuildingTypeToTitleMap mTitleMap;
