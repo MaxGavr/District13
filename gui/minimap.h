@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QWidget>
+#include <QFrame>
 #include <QPixmap>
 #include <QPushButton>
 
@@ -12,7 +12,7 @@ class Site;
 class Event;
 
 
-class DistrictMinimap : public QWidget
+class DistrictMinimap : public QFrame
 {
     Q_OBJECT
 public:
@@ -29,6 +29,7 @@ public:
     static QString getBuildingTitle(Building::Type type);
 
     void updateMinimap();
+    void highlightArea(int centerX, int centerY, int area, bool on = true);
 
 signals:
     void buildEvent(Event* event);
@@ -60,6 +61,8 @@ public:
 
     Site* getSite() const;
     QPixmap getPicture() const;
+
+    void highlight(bool on = true);
 
 private:
     DistrictMinimap* mMinimap;

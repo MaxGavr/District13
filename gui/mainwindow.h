@@ -7,6 +7,8 @@ class DistrictMinimap;
 class Game;
 class QPushButton;
 class QTextEdit;
+class QLabel;
+class GameInfoWidget;
 
 class MainWindow : public QWidget
 {
@@ -27,10 +29,13 @@ private:
     void initializeWidgets();
     void setupLayout();
 
-    void updateTurnNumber();
+    void updateGameInfo();
 
     void printMessage(const QString& message);
     void printMessage(const EventLogger::EventSummary& summary);
+
+    void gameOver();
+    void restart();
 
 private:
     Game* mGame;
@@ -38,4 +43,5 @@ private:
     DistrictMinimap* mMinimapWidget;
     QTextEdit* mLogWidget;
     QPushButton* mNextTurnButton;
+    GameInfoWidget* mGameInfo;
 };

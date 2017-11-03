@@ -7,6 +7,8 @@
 BuildDialog::BuildDialog(Site* site)
     : mChosenType(Building::Type::NONE)
 {
+    setWindowTitle(tr("Построить"));
+
     const Building::TypeList types = Building::getAllTypes();
 
     auto layout = new QVBoxLayout();

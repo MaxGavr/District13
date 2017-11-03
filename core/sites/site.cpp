@@ -9,8 +9,9 @@ Site::Site(int posX, int posY)
     : mAddress({posX, posY}),
       mBuilding(nullptr),
       mPendingConstruction(false),
-      mPollution(0, 100, 5, 0, 20)
+      mCleanliness(0, 100, 5, 100, 20)
 {
+    mCleanliness.setValue(100);
 }
 
 Site::Address Site::getAddress() const
@@ -79,10 +80,10 @@ void Site::nextTurn()
 {
     if (mBuilding)
         mBuilding->nextTurn();
-    ++mPollution;
+    --mCleanliness;
 }
 
-HappinessFactor Site::getPollution() const
+HappinessFactor& Site::getPollution()
 {
-    return mPollution;
+    return mCleanliness;
 }

@@ -2,8 +2,13 @@
 #include "administration.h"
 #include "district.h"
 
-Game::Game()
-    : mAdmin(nullptr), mTurn(0)
+int Game::getHappinessGoal() const
+{
+    return mHappinessGoal;
+}
+
+Game::Game(int happinessGoal)
+    : mAdmin(nullptr), mHappinessGoal(happinessGoal), mTurn(0)
 {
     District* district = new District(10);
 
@@ -20,12 +25,12 @@ unsigned Game::getTurn() const
     return mTurn;
 }
 
-void Game::nextTurn()
+bool Game::nextTurn()
 {
-    mExecutedEvents.clear();
+    if (isGameOver())
+        return false;
 
-    mAdmin->nextTurn();
-    mAdmin->getDistrict()->nextTurn();
+    mExecutedEvents.clear();
 
     // execute environment events
     for (Event* event : mEvents)
@@ -45,7 +50,28 @@ void Game::nextTurn()
         }
     mUserEvents.clear();
 
+    mAdmin->nextTurn();
+    mAdmin->getDistrict()->nextTurn();
+
     ++mTurn;
+    return true;
+}
+
+void Game::restartGame()
+{
+    mEvents.clear();
+    mUserEvents.clear();
+    mExecutedEvents.clear();
+
+    delete mAdmin;
+    mAdmin = new Administration(new District(10));
+
+    mTurn = 0;
+}
+
+bool Game::isGameOver() const
+{
+    return mAdmin->calcAverageHappiness() < mHappinessGoal;
 }
 
 Game::EventQueue Game::getExecutedEvents() const

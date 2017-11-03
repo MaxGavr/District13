@@ -1,8 +1,10 @@
 #include "building.h"
+#include "site.h"
 
-Building::Building(Site* site, Building::Type type, bool populated)
+Building::Building(Site* site, Building::Type type, int influenceArea)
     : mSite(site),
       mType(type),
+      mInfluenceArea(influenceArea),
       mCondition(0, 100, 5, 50, 30)
 {
 }
@@ -14,12 +16,7 @@ Building::Type Building::getType() const
 
 Building::TypeList Building::getAllTypes()
 {
-    TypeList types;
-    types.push_back(Type::NONE);
-    types.push_back(Type::HOUSE);
-    types.push_back(Type::SHOP);
-    types.push_back(Type::SCHOOL);
-    types.push_back(Type::PARK);
+    TypeList types = {Type::NONE, Type::HOUSE, Type::SHOP, Type::SCHOOL, Type::PARK};
     return types;
 }
 
@@ -32,12 +29,36 @@ bool Building::isPublic() const
 {
     return mType == Type::SHOP ||
            mType == Type::SCHOOL ||
-           mType == Type::PARK;
+            mType == Type::PARK;
+}
+
+bool Building::affectsNeighbours() const
+{
+    return mType == Type::SHOP ||
+           mType == Type::SCHOOL ||
+            mType == Type::PARK;
+}
+
+int Building::getInfluenceArea() const
+{
+    return mInfluenceArea;
 }
 
 HappinessFactor Building::getCondition() const
 {
     return mCondition;
+}
+
+void Building::addNeighbour(Building* neighbour)
+{
+    if (neighbour->getType() == Type::PARK)
+        mSite->getPollution().setStep(mSite->getPollution().getStep() * 0.5);
+}
+
+void Building::removeNeighbour(Building* neighbour)
+{
+    if (neighbour->getType() == Type::PARK)
+        mCondition.setStep(mCondition.getStep() * 2);
 }
 
 void Building::nextTurn()

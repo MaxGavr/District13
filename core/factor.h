@@ -8,6 +8,7 @@ public:
                     int step = 1,
                     int baseValue = 50,
                     int happinessImpact = 20);
+    HappinessFactor(const HappinessFactor& factor);
 
     HappinessFactor& operator++();
     HappinessFactor& operator++(int);
@@ -18,6 +19,9 @@ public:
     int getValue() const;
     void setValue(int value);
 
+    int getStep() const;
+    void setStep(int step);
+
     int getMaxValue() const;
 
     int getHappinessImpact() const;
@@ -25,10 +29,10 @@ public:
 private:
     int mValue;
 
-    const int mStep;
-    const int mMaxValue;
-    const int mMinValue;
+    int mStep;
+    int mMaxValue;
+    int mMinValue;
 
-    const int mBaseValue;
-    const int mMaxHappinessImpact;
+    int mBaseValue;
+    int mMaxHappinessImpact;
 };

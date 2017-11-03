@@ -1,5 +1,6 @@
 #include "district.h"
 #include "sites/site.h"
+#include "sites/publicbuilding.h"
 
 using namespace std;
 
@@ -45,11 +46,42 @@ Site* District::getSiteAt(size_t x, size_t y) const
 
 Building* District::getBuildingAt(size_t x, size_t y) const
 {
-    return getSiteAt(x, y)->getBuilding();
+    Site* site = getSiteAt(x, y);
+    if (!site)
+        return nullptr;
+
+    return site->getBuilding();
+}
+
+District::SiteRow District::getAdjacentSites(Site* site, size_t distance) const
+{
+    SiteRow sites;
+    const Site::Address addr = site->getAddress();
+
+    for (int i = addr.first - distance; i <= addr.first + distance; ++i)
+    {
+        for (int j = addr.second - distance; j <= addr.second + distance; ++j)
+        {
+            if (i == addr.first && j == addr.second)
+                continue;
+
+            try
+            {
+                sites.push_back(getSiteAt(i, j));
+            }
+            catch (std::out_of_range o)
+            {
+                continue;
+            }
+        }
+    }
+    return sites;
 }
 
 void District::nextTurn()
 {
+    updateBuildingsInfluenceAreas();
+
     for (size_t i = 0; i < getSize(); ++i)
         for (size_t j = 0; j < getSize(); ++j)
             getSiteAt(i, j)->nextTurn();
@@ -57,18 +89,25 @@ void District::nextTurn()
 
 void District::updateBuildingsInfluenceAreas()
 {
-//    for (size_t i = 0; i < getSize(); ++i)
-//        for (size_t j = 0; j < getSize(); ++j)
-//        {
-//            Building* building = getBuildingAt(i, j);
-//            if (building && building->isPublic())
-//        }
+    for (size_t i = 0; i < getSize(); ++i)
+        for (size_t j = 0; j < getSize(); ++j)
+        {
+            Building* building = getBuildingAt(i, j);
+
+            if (!building || !building->affectsNeighbours())
+                continue;
+
+            SiteRow adjacentSites = getAdjacentSites(getSiteAt(i, j), building->getInfluenceArea());
+            for (Site* site : adjacentSites)
+                if (site->getBuilding())
+                    site->getBuilding()->addNeighbour(building);
+        }
 }
 
 void District::generateDistrictMap()
 {
     if (mPopulatedPart < 0)
-        return;
+        mPopulatedPart = 0;
     if (mPopulatedPart > 1)
         mPopulatedPart = 1;
 
@@ -77,7 +116,7 @@ void District::generateDistrictMap()
         tempVector.insert(tempVector.end(), siteRow.begin(), siteRow.end());
 
     size_t initialSize = tempVector.size();
-    int populatedNeeded = initialSize * mPopulatedPart;
+    uint populatedNeeded = initialSize * mPopulatedPart;
 
     while ((initialSize - tempVector.size()) < populatedNeeded)
     {

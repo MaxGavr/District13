@@ -16,12 +16,12 @@ int House::getHappiness() const
     return mHappiness;
 }
 
-void House::addPublicBuilding(PublicBuilding* building)
-{
-    if (std::find(mNearestBuildings.cbegin(), mNearestBuildings.cend(), building)
-             == mNearestBuildings.cend())
-        mNearestBuildings.push_back(building);
-}
+//void House::addPublicBuilding(PublicBuilding* building)
+//{
+//    if (std::find(mNearestBuildings.cbegin(), mNearestBuildings.cend(), building)
+//             == mNearestBuildings.cend())
+//        mNearestBuildings.push_back(building);
+//}
 
 std::vector<HappinessFactor> House::getFactors() const
 {
@@ -39,6 +39,7 @@ void House::calculateHappiness()
 {
     std::vector<HappinessFactor> factors = getFactors();
 
+    mHappiness = getBaseHappiness();
     for (auto it = factors.cbegin(); it != factors.cend(); ++it)
         mHappiness += it->getHappinessImpact();
 
@@ -46,6 +47,29 @@ void House::calculateHappiness()
         mHappiness = getMinHappiness();
     if (mHappiness > getMaxHappiness())
         mHappiness = getMaxHappiness();
+}
+
+void House::addNeighbour(Building* neighbour)
+{
+    Building::addNeighbour(neighbour);
+
+    if (neighbour->isPublic())
+    {
+        auto publicBuilding = dynamic_cast<PublicBuilding*>(neighbour);
+
+        if (std::find(mNearestBuildings.cbegin(), mNearestBuildings.cend(), publicBuilding)
+                 == mNearestBuildings.cend())
+            mNearestBuildings.push_back(publicBuilding);
+    }
+}
+
+void House::removeNeighbour(Building* neighbour)
+{
+    if (neighbour->isPublic())
+    {
+        auto publicBuilding = dynamic_cast<PublicBuilding*>(neighbour);
+        mNearestBuildings.erase(std::find(mNearestBuildings.begin(), mNearestBuildings.end(), publicBuilding));
+    }
 }
 
 void House::nextTurn()

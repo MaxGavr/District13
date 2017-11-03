@@ -4,5 +4,8 @@
         <file>empty.png</file>
         <file>school.png</file>
         <file>shop.png</file>
+        <file>park.png</file>
+        <file>time.png</file>
+        <file>sad_face.png</file>
     </qresource>
 </RCC>

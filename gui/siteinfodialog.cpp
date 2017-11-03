@@ -25,8 +25,6 @@ SiteInfoDialog::SiteInfoDialog(Site* site, QWidget* parent)
     fillBuildingInfo();
     fillPopulationInfo();
 
-
-
     auto buttonsLayout = new QHBoxLayout();
 
     mOkButton = new QPushButton(tr("Ок"));
@@ -85,6 +83,8 @@ void SiteInfoDialog::fillPopulationInfo()
     happinessLabel->setText(tr("Уровень счастья: ") + QString::number(house->getHappiness()));
     layout->addWidget(happinessLabel);
 
+
+
     mPopulationInfo->setLayout(layout);
 }
 
@@ -109,7 +109,7 @@ void SiteInfoDialog::fillBuildingInfo()
     {
         const HappinessFactor condition = building->getCondition();
         buildingInfo->setText(
-                    tr("Состояние:") +
+                    tr("Состояние: ") +
                     QString::number(condition.getValue()) +
                     QString("/") +
                     QString::number(condition.getMaxValue()));
@@ -128,7 +128,7 @@ void SiteInfoDialog::fillSiteInfo()
     const HappinessFactor pollution = mSite->getPollution();
     auto pollutionLabel = new QLabel();
     pollutionLabel->setText(
-                tr("Загрязнение: ") +
+                tr("Чистота: ") +
                 QString::number(pollution.getValue()) +
                 QString("/") +
                 QString::number(pollution.getMaxValue()));

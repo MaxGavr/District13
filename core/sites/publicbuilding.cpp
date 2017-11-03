@@ -16,9 +16,10 @@ Building::Type PublicBuilding::getBuildingType(PublicBuilding::Type type)
 }
 
 PublicBuilding::PublicBuilding(Site* site, PublicBuilding::Type type)
-    : Building(site, getBuildingType(type))
+    : Building(site, getBuildingType(type), chooseInfluenceArea(type))
 {
-
+    mFactor = HappinessFactor(1, 1, 0, 0, 20);
+    mFactor.setValue(mFactor.getMaxValue());
 }
 
 HappinessFactor PublicBuilding::getFactor() const
@@ -29,4 +30,19 @@ HappinessFactor PublicBuilding::getFactor() const
 void PublicBuilding::nextTurn()
 {
     Building::nextTurn();
+}
+
+int PublicBuilding::chooseInfluenceArea(PublicBuilding::Type type) const
+{
+    switch (type)
+    {
+    case Type::PARK:
+        return 3;
+    case Type::SHOP:
+        return 2;
+    case Type::SCHOOL:
+        return 3;
+    default:
+        return 0;
+    }
 }

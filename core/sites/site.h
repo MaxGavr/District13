@@ -26,7 +26,7 @@ public:
 
     void nextTurn();
 
-    HappinessFactor getPollution() const;
+    HappinessFactor& getPollution();
 
 private:
     Address mAddress;
@@ -34,5 +34,5 @@ private:
     Building* mBuilding;
     bool mPendingConstruction;
 
-    HappinessFactor mPollution;
+    HappinessFactor mCleanliness;
 };

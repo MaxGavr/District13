@@ -17,9 +17,11 @@ public:
 
     int getHappiness() const;
 
-    void addPublicBuilding(PublicBuilding* building);
     std::vector<HappinessFactor> getFactors() const;
     void calculateHappiness();
+
+    void addNeighbour(Building* neighbour);
+    virtual void removeNeighbour(Building* neighbour);
 
     void nextTurn();
 

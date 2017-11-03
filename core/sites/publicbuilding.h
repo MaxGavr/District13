@@ -20,6 +20,7 @@ public:
     virtual void nextTurn();
 
 private:
+    int chooseInfluenceArea(PublicBuilding::Type type) const;
+
     HappinessFactor mFactor;
-    int mArea;
 };
