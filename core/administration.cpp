@@ -56,7 +56,7 @@ int Administration::calcIncome() const
     {
         for (size_t j = 0; j < mDistrict->getSize(); ++j)
         {
-            auto factory = dynamic_cast<IndustrialBuilding*>(mDistrict->getBuildingAt(i, j));
+            auto factory = dynamic_cast<Factory*>(mDistrict->getBuildingAt(i, j));
             if (factory)
                 factoryIncome += factory->calcIncome();
         }

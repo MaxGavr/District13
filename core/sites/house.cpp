@@ -16,13 +16,6 @@ int House::getHappiness() const
     return mHappiness;
 }
 
-//void House::addPublicBuilding(PublicBuilding* building)
-//{
-//    if (std::find(mNearestBuildings.cbegin(), mNearestBuildings.cend(), building)
-//             == mNearestBuildings.cend())
-//        mNearestBuildings.push_back(building);
-//}
-
 std::vector<HappinessFactor> House::getFactors() const
 {
     std::vector<HappinessFactor> factors;

@@ -29,8 +29,7 @@ SOURCES += main.cpp\
     gui/eventlogger.cpp \
     core/sites/publicbuilding.cpp \
     gui/builddialog.cpp \
-    gui/gameinfowidget.cpp \
-    core/sites/industrialbuilding.cpp
+    gui/gameinfowidget.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/game.h \
@@ -46,8 +45,7 @@ HEADERS  += gui/mainwindow.h \
     gui/eventlogger.h \
     core/sites/publicbuilding.h \
     gui/builddialog.h \
-    gui/gameinfowidget.h \
-    core/sites/industrialbuilding.h
+    gui/gameinfowidget.h
 
 RESOURCES += \
     res/resources.qrc

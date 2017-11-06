@@ -1,27 +1,8 @@
 #include "publicbuilding.h"
 
-Building::Type PublicBuilding::getBuildingType(PublicBuilding::Type type)
+PublicBuilding::PublicBuilding(Site* site, Building::Type type, int influenceArea)
+    : Building(site, type, influenceArea)
 {
-    switch (type)
-    {
-    case PublicBuilding::Type::SHOP:
-        return Building::Type::SHOP;
-    case PublicBuilding::Type::SCHOOL:
-        return Building::Type::SCHOOL;
-    case PublicBuilding::Type::PARK:
-        return Building::Type::PARK;
-    case PublicBuilding::Type::FACTORY:
-        return Building::Type::FACTORY;
-    default:
-        return Building::Type::NONE;
-    }
-}
-
-PublicBuilding::PublicBuilding(Site* site, PublicBuilding::Type type)
-    : Building(site, getBuildingType(type), chooseInfluenceArea(type))
-{
-    mFactor = HappinessFactor(1, 1, 0, 0, 20);
-    mFactor.setValue(mFactor.getMaxValue());
 }
 
 HappinessFactor PublicBuilding::getFactor() const
@@ -34,19 +15,53 @@ void PublicBuilding::nextTurn()
     Building::nextTurn();
 }
 
-int PublicBuilding::chooseInfluenceArea(PublicBuilding::Type type) const
+
+
+Shop::Shop(Site* site)
+    : PublicBuilding(site, Building::Type::SHOP, 2)
 {
-    switch (type)
-    {
-    case Type::PARK:
-        return 3;
-    case Type::SHOP:
-        return 2;
-    case Type::SCHOOL:
-        return 3;
-    case Type::FACTORY:
-        return 2;
-    default:
-        return 0;
-    }
+    mFactor = HappinessFactor(1, 1, 0, 0, 20);
+    mFactor.setValue(mFactor.getMaxValue());
 }
+
+School::School(Site* site)
+    : PublicBuilding(site, Building::Type::SCHOOL, 3)
+{
+    mFactor = HappinessFactor(1, 1, 0, 0, 10);
+    mFactor.setValue(mFactor.getMaxValue());
+}
+
+Park::Park(Site* site)
+    : PublicBuilding(site, Building::Type::PARK, 3)
+{
+    mFactor = HappinessFactor(1, 1, 0, 0, 5);
+    mFactor.setValue(mFactor.getMaxValue());
+}
+
+Factory::Factory(Site* site)
+    : PublicBuilding(site, Building::Type::FACTORY, 1),
+      mIsNearShop(false)
+{
+    mFactor = HappinessFactor(0, 1, 0, 1, 10);
+    mFactor.setValue(mFactor.getMinValue());
+}
+
+void Factory::addNeighbour(Building* neighbour)
+{
+    PublicBuilding::addNeighbour(neighbour);
+
+    if (neighbour->getType() == Building::Type::SHOP)
+        mIsNearShop = true;
+}
+
+int Factory::calcIncome() const
+{
+    HappinessFactor condition = getCondition();
+
+    int income = getBaseIncome() * ((double)condition.getValue() / condition.getMaxValue());
+    if (mIsNearShop)
+        income = (double)income * 1.5;
+
+    return income;
+}
+

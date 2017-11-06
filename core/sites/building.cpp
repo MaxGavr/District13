@@ -30,34 +30,13 @@ Building::Type Building::getType() const
 
 Building::TypeList Building::getAllTypes()
 {
-    TypeList types = {Type::NONE, Type::HOUSE, Type::SHOP, Type::SCHOOL, Type::PARK, Type::FACTORY};
+    TypeList types = {Type::NONE,
+                      Type::HOUSE,
+                      Type::SHOP,
+                      Type::SCHOOL,
+                      Type::PARK,
+                      Type::FACTORY};
     return types;
-}
-
-bool Building::isHouse() const
-{
-    return mType == Type::HOUSE;
-}
-
-bool Building::isPublic() const
-{
-    return mType == Type::SHOP ||
-           mType == Type::SCHOOL ||
-            mType == Type::PARK ||
-            mType == Type::FACTORY;
-}
-
-bool Building::canBeBuild() const
-{
-    return isPublic();
-}
-
-bool Building::affectsNeighbours() const
-{
-    return mType == Type::SHOP ||
-           mType == Type::SCHOOL ||
-            mType == Type::PARK ||
-            mType == Type::FACTORY;
 }
 
 int Building::getInfluenceArea() const

@@ -17,13 +17,17 @@ public:
 
     int getHappiness() const;
 
+    virtual bool isHouse() const { return true; }
+    virtual bool isPublic() const { return false; }
+    virtual bool affectsNeighbours() const { return false; }
+
     std::vector<HappinessFactor> getFactors() const;
     void calculateHappiness();
 
-    void addNeighbour(Building* neighbour);
+    virtual void addNeighbour(Building* neighbour);
     virtual void removeNeighbour(Building* neighbour);
 
-    void nextTurn();
+    virtual void nextTurn();
 
 private:
     std::list<PublicBuilding*> mNearestBuildings;

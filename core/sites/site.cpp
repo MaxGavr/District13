@@ -41,7 +41,6 @@ bool Site::constructBuilding(Building::Type type)
     {
         bool success;
 
-        // TODO: replace with Factory
         switch (type)
         {
         case Building::Type::NONE:
@@ -53,19 +52,19 @@ bool Site::constructBuilding(Building::Type type)
             success = true;
             break;
         case Building::Type::SHOP:
-            mBuilding = new PublicBuilding(this, PublicBuilding::Type::SHOP);
+            mBuilding = new Shop(this);
             success = true;
             break;
         case Building::Type::SCHOOL:
-            mBuilding = new PublicBuilding(this, PublicBuilding::Type::SCHOOL);
+            mBuilding = new School(this);
             success = true;
             break;
         case Building::Type::PARK:
-            mBuilding = new PublicBuilding(this, PublicBuilding::Type::PARK);
+            mBuilding = new Park(this);
             success = true;
             break;
         case Building::Type::FACTORY:
-            mBuilding = new IndustrialBuilding(this);
+            mBuilding = new Factory(this);
             success = true;
             break;
         default:

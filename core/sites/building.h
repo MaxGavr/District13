@@ -20,18 +20,17 @@ public:
     };
     using TypeList = std::list<Building::Type>;
 
-    Building(Site* site, Building::Type type, int influenceArea = 0);
-
     Building::Type getType() const;
     static TypeList getAllTypes();
 
+    Building(Site* site, Building::Type type, int influenceArea = 0);
+
     static int getBuildCost(Building::Type type);
 
-    bool isHouse() const;
-    bool isPublic() const;
-    bool canBeBuild() const;
+    virtual bool isHouse() const = 0;
+    virtual bool isPublic() const = 0;
 
-    bool affectsNeighbours() const;
+    virtual bool affectsNeighbours() const = 0;
     int getInfluenceArea() const;
 
     HappinessFactor getCondition() const;

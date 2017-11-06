@@ -5,16 +5,11 @@
 class PublicBuilding : public Building
 {
 public:
-    enum class Type {
-        SHOP,
-        SCHOOL,
-        PARK,
-        FACTORY
-    };
+    PublicBuilding(Site* site, Building::Type type, int influenceArea);
 
-    static Building::Type getBuildingType(PublicBuilding::Type type);
-
-    PublicBuilding(Site* site, Type type);
+    virtual bool isHouse() const { return false; }
+    virtual bool isPublic() const { return true; }
+    virtual bool affectsNeighbours() const { return true; }
 
     HappinessFactor getFactor() const;
 
@@ -22,7 +17,45 @@ public:
 
 protected:
     HappinessFactor mFactor;
+};
+
+
+
+class Shop : public PublicBuilding
+{
+public:
+    Shop(Site* site);
+};
+
+
+
+class School : public PublicBuilding
+{
+public:
+    School(Site* site);
+};
+
+
+
+class Park : public PublicBuilding
+{
+public:
+    Park(Site* site);
+};
+
+
+
+class Factory : public PublicBuilding
+{
+public:
+    static int getBaseIncome() { return 5; }
+
+    Factory(Site* site);
+
+    int calcIncome() const;
+
+    virtual void addNeighbour(Building *neighbour);
 
 private:
-    int chooseInfluenceArea(PublicBuilding::Type type) const;
+    bool mIsNearShop;
 };

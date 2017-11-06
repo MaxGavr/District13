@@ -16,13 +16,14 @@ public:
     HappinessFactor& operator--();
     HappinessFactor& operator--(int);
 
-    int getValue() const;
+    int getValue() const { return mValue; }
     void setValue(int value);
 
-    int getStep() const;
+    int getStep() const { return mStep; }
     void setStep(int step);
 
-    int getMaxValue() const;
+    int getMaxValue() const { return mMaxValue; }
+    int getMinValue() const { return mMinValue; }
 
     int getHappinessImpact() const;
 

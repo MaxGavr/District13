@@ -48,11 +48,6 @@ HappinessFactor& HappinessFactor::operator--(int)
     return --(*this);
 }
 
-int HappinessFactor::getValue() const
-{
-    return mValue;
-}
-
 void HappinessFactor::setValue(int value)
 {
     if (value > mMaxValue)
@@ -63,19 +58,9 @@ void HappinessFactor::setValue(int value)
         mValue = value;
 }
 
-int HappinessFactor::getStep() const
-{
-    return mStep;
-}
-
 void HappinessFactor::setStep(int step)
 {
     mStep = step;
-}
-
-int HappinessFactor::getMaxValue() const
-{
-    return mMaxValue;
 }
 
 int HappinessFactor::getHappinessImpact() const
