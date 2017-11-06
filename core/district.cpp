@@ -19,8 +19,10 @@ District::District(size_t districtSize, float populatedPart)
 
 District::~District()
 {
-    for (SiteRow row : mMap)
-        row.clear();
+    for (SiteRow& row : mMap)
+        for (Site* site : row)
+            delete site;
+
     mMap.clear();
 }
 
@@ -53,7 +55,7 @@ Building* District::getBuildingAt(size_t x, size_t y) const
     return site->getBuilding();
 }
 
-District::SiteRow District::getAdjacentSites(Site* site, size_t distance) const
+District::SiteRow District::getAdjacentSites(Site* site, int distance) const
 {
     SiteRow sites;
     const Site::Address addr = site->getAddress();

@@ -121,6 +121,7 @@ void MainWindow::restart()
     printMessage(tr("Добро пожаловать в Район №13"));
 
     mGame->restartGame();
+    mMinimapWidget->setDistrict(mGame->getAdministration()->getDistrict());
     updateGameInfo();
 }
 

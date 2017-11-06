@@ -25,7 +25,7 @@ public:
     Site* getSiteAt(std::size_t x, std::size_t y) const;
     Building* getBuildingAt(std::size_t x, std::size_t y) const;
 
-    SiteRow getAdjacentSites(Site* site, size_t distance) const;
+    SiteRow getAdjacentSites(Site* site, int distance) const;
 
     void nextTurn();
 

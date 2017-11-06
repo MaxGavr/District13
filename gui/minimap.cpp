@@ -32,13 +32,38 @@ const DistrictMinimap::BuildingTypeToTitleMap DistrictMinimap::mTitleMap = {
 
 DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)
     : QFrame(parent),
-      mDistrict(district)
-
+      mDistrict(nullptr)
 {
-    Q_ASSERT(mDistrict);
+    setDistrict(district);
+}
+
+DistrictMinimap::~DistrictMinimap()
+{
+    for (MinimapRow& row : mMinimap)
+        for (DistrictMinimapItem* mapItem : row)
+            delete mapItem;
+    mMinimap.clear();
+
+    mMapIndices.clear();
+}
+
+void DistrictMinimap::setDistrict(District* district)
+{
+    Q_ASSERT(district);
+    mDistrict = district;
+
+    for (MinimapRow& row : mMinimap)
+        for (DistrictMinimapItem* mapItem : row)
+            delete mapItem;
+
     mMapSize = mDistrict->getSize();
 
+    // TODO: check if equal size
     mMinimap = Minimap(mMapSize, MinimapRow(mMapSize, nullptr));
+
+    for (size_t i = 0; i < mMapSize; ++i)
+        for (size_t j = 0; j < mMapSize; ++j)
+            mMinimap.at(i).at(j) = new DistrictMinimapItem(mDistrict->getSiteAt(i, j), this);
 
     setupLayout();
 }
@@ -78,6 +103,13 @@ void DistrictMinimap::onBuild(Building::Type type)
 
 void DistrictMinimap::setupLayout()
 {
+    if (layout())
+    {
+        delete layout();
+        qDeleteAll(mMapIndices);
+        mMapIndices.clear();
+    }
+
     QGridLayout* layout = new QGridLayout(this);
     layout->setSpacing(0);
     layout->setSizeConstraint(QLayout::SetMaximumSize);
@@ -88,33 +120,24 @@ void DistrictMinimap::setupLayout()
         indexLabel = new QLabel(QString::number(i));
         indexLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(indexLabel, i + 1, 0, 1, 1);
+        mMapIndices.append(indexLabel);
 
         indexLabel = new QLabel(QString::number(i));
         indexLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(indexLabel, 0, i + 1, 1, 1);
+        mMapIndices.append(indexLabel);
     }
 
     for (size_t i = 0; i < mMapSize; ++i)
-    {
         for (size_t j = 0; j < mMapSize; ++j)
-        {
-            mMinimap.at(i).at(j) = new DistrictMinimapItem(mDistrict->getSiteAt(i, j), this);
             layout->addWidget(mMinimap.at(i).at(j), i + 1, j + 1, 1, 1);
-        }
-    }
 }
 
 void DistrictMinimap::updateMinimap()
 {
     for (size_t i = 0; i < mMapSize; ++i)
-    {
         for (size_t j = 0; j < mMapSize; ++j)
-        {
-            Building* building = mDistrict->getBuildingAt(i, j);
-            QIcon icon = QIcon(getBuildingImage(building));
-            mMinimap.at(i).at(j)->setIcon(icon);
-        }
-    }
+            mMinimap.at(i).at(j)->updatePicture();
 }
 
 void DistrictMinimap::highlightArea(int centerX, int centerY, int area, bool on)
@@ -170,7 +193,7 @@ DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
     setMaximumSize(pictureSize);
     setIconSize(pictureSize);
 
-    setIcon(getPicture());
+    updatePicture();
 
     setFlat(true);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -183,18 +206,17 @@ Site* DistrictMinimapItem::getSite() const
     return mSite;
 }
 
-QPixmap DistrictMinimapItem::getPicture() const
-{
-    using Type = Building::Type;
-    const Type type = mSite->getBuilding() ? mSite->getBuilding()->getType() : Type::NONE;
-
-    return DistrictMinimap::getBuildingImage(type);
-}
-
 void DistrictMinimapItem::highlight(bool on)
 {
     if (on)
         setStyleSheet("border: 0px solid black; background-color: #A9F16C;");
     else
         setStyleSheet("");
+}
+
+void DistrictMinimapItem::updatePicture()
+{
+    Building* building = mSite->getBuilding();
+    QIcon icon = QIcon(DistrictMinimap::getBuildingImage(building));
+    setIcon(icon);
 }

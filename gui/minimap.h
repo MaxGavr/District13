@@ -6,6 +6,8 @@
 
 #include "../core/sites/building.h"
 
+class QLabel;
+
 class District;
 class DistrictMinimapItem;
 class Site;
@@ -15,18 +17,23 @@ class Event;
 class DistrictMinimap : public QFrame
 {
     Q_OBJECT
-public:
-    using MinimapRow = std::vector<DistrictMinimapItem*>;
-    using Minimap = std::vector<MinimapRow>;
 
+public:
     using BuildingTypeToImageMap = std::map<Building::Type, QString>;
     using BuildingTypeToTitleMap = std::map<Building::Type, QString>;
-
-    DistrictMinimap(District* district, QWidget *parent = 0);
 
     static QPixmap getBuildingImage(Building::Type type);
     static QPixmap getBuildingImage(const Building* building);
     static QString getBuildingTitle(Building::Type type);
+
+public:
+    using MinimapRow = std::vector<DistrictMinimapItem*>;
+    using Minimap = std::vector<MinimapRow>;
+
+    DistrictMinimap(District* district, QWidget *parent = 0);
+    virtual ~DistrictMinimap();
+
+    void setDistrict(District* district);
 
     void updateMinimap();
     void highlightArea(int centerX, int centerY, int area, bool on = true);
@@ -47,6 +54,8 @@ private:
     size_t mMapSize;
     Minimap mMinimap;
 
+    QVector<QLabel*> mMapIndices;
+
 private:
     District* mDistrict;
 };
@@ -60,9 +69,9 @@ public:
     DistrictMinimapItem(Site* site, DistrictMinimap* minimap);
 
     Site* getSite() const;
-    QPixmap getPicture() const;
 
     void highlight(bool on = true);
+    void updatePicture();
 
 private:
     DistrictMinimap* mMinimap;
