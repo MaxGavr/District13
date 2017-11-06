@@ -19,7 +19,8 @@ const DistrictMinimap::BuildingTypeToImageMap DistrictMinimap::mImageMap = {
     { Building::Type::HOUSE, ":/res/icons/house" },
     { Building::Type::SHOP, ":/res/icons/shop" },
     { Building::Type::SCHOOL, ":/res/icons/school" },
-    { Building::Type::PARK, ":/res/icons/park" }
+    { Building::Type::PARK, ":/res/icons/park" },
+    { Building::Type::FACTORY, ":/res/icons/factory" }
 };
 
 const DistrictMinimap::BuildingTypeToTitleMap DistrictMinimap::mTitleMap = {
@@ -27,7 +28,8 @@ const DistrictMinimap::BuildingTypeToTitleMap DistrictMinimap::mTitleMap = {
     { Building::Type::HOUSE, tr("Жилой дом") },
     { Building::Type::SHOP, tr("Магазин") },
     { Building::Type::SCHOOL, tr("Школа") },
-    { Building::Type::PARK, tr("Парк") }
+    { Building::Type::PARK, tr("Парк") },
+    { Building::Type::FACTORY, tr("Завод") }
 };
 
 DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)

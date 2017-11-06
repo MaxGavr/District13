@@ -8,7 +8,8 @@ public:
     enum class Type {
         SHOP,
         SCHOOL,
-        PARK
+        PARK,
+        FACTORY
     };
 
     static Building::Type getBuildingType(PublicBuilding::Type type);
@@ -19,8 +20,9 @@ public:
 
     virtual void nextTurn();
 
+protected:
+    HappinessFactor mFactor;
+
 private:
     int chooseInfluenceArea(PublicBuilding::Type type) const;
-
-    HappinessFactor mFactor;
 };

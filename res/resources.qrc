@@ -7,5 +7,6 @@
         <file>park.png</file>
         <file>time.png</file>
         <file>sad_face.png</file>
+        <file>factory.png</file>
     </qresource>
 </RCC>

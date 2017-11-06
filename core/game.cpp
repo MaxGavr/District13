@@ -12,7 +12,7 @@ Game::Game(int happinessGoal)
 {
     District* district = new District(10);
 
-    mAdmin = new Administration(district);
+    mAdmin = new Administration(district, 100, 10);
 }
 
 Administration* Game::getAdministration() const
@@ -64,7 +64,7 @@ void Game::restartGame()
     mExecutedEvents.clear();
 
     delete mAdmin;
-    mAdmin = new Administration(new District(10));
+    mAdmin = new Administration(new District(10), 100, 10);
 
     mTurn = 0;
 }

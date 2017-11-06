@@ -10,6 +10,8 @@ Building::Type PublicBuilding::getBuildingType(PublicBuilding::Type type)
         return Building::Type::SCHOOL;
     case PublicBuilding::Type::PARK:
         return Building::Type::PARK;
+    case PublicBuilding::Type::FACTORY:
+        return Building::Type::FACTORY;
     default:
         return Building::Type::NONE;
     }
@@ -42,6 +44,8 @@ int PublicBuilding::chooseInfluenceArea(PublicBuilding::Type type) const
         return 2;
     case Type::SCHOOL:
         return 3;
+    case Type::FACTORY:
+        return 2;
     default:
         return 0;
     }

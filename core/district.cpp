@@ -48,11 +48,7 @@ Site* District::getSiteAt(size_t x, size_t y) const
 
 Building* District::getBuildingAt(size_t x, size_t y) const
 {
-    Site* site = getSiteAt(x, y);
-    if (!site)
-        return nullptr;
-
-    return site->getBuilding();
+    return getSiteAt(x, y)->getBuilding();
 }
 
 District::SiteRow District::getAdjacentSites(Site* site, int distance) const

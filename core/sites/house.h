@@ -11,9 +11,9 @@ class House : public Building
 public:
     House(Site* site);
 
-    inline int getMinHappiness() const { return 0; }
-    inline int getMaxHappiness() const { return 100; }
-    inline int getBaseHappiness() const { return 50; }
+    static inline int getMinHappiness() { return 0; }
+    static inline int getMaxHappiness() { return 100; }
+    static inline int getBaseHappiness() { return 50; }
 
     int getHappiness() const;
 

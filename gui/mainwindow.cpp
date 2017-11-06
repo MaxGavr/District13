@@ -83,9 +83,12 @@ void MainWindow::setupLayout()
 void MainWindow::updateGameInfo()
 {
     mNextTurnButton->setToolTip(tr("Текущий ход - ") + QString::number(mGame->getTurn()));
-    mGameInfo->setCurrentTurn(mGame->getTurn());
 
-    mGameInfo->setAverageHappiness(mGame->getAdministration()->calcAverageHappiness());
+    Administration* admin = mGame->getAdministration();
+
+    mGameInfo->setCurrentTurn(mGame->getTurn());
+    mGameInfo->setAverageHappiness(admin->calcAverageHappiness());
+    mGameInfo->setCurrentMoney(admin->getCurrentMoney(), admin->calcIncome());
 }
 
 void MainWindow::printMessage(const QString& message)

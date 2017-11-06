@@ -14,7 +14,8 @@ public:
         HOUSE,
         SHOP,
         SCHOOL,
-        PARK
+        PARK,
+        FACTORY
     };
     using TypeList = std::list<Building::Type>;
 
@@ -25,6 +26,8 @@ public:
 
     bool isHouse() const;
     bool isPublic() const;
+    bool canBeBuild() const;
+
     bool affectsNeighbours() const;
     int getInfluenceArea() const;
 

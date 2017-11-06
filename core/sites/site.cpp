@@ -2,6 +2,7 @@
 
 #include "house.h"
 #include "publicbuilding.h"
+#include "industrialbuilding.h"
 
 using namespace std;
 
@@ -61,6 +62,10 @@ bool Site::constructBuilding(Building::Type type)
             break;
         case Building::Type::PARK:
             mBuilding = new PublicBuilding(this, PublicBuilding::Type::PARK);
+            success = true;
+            break;
+        case Building::Type::FACTORY:
+            mBuilding = new IndustrialBuilding(this);
             success = true;
             break;
         default:
