@@ -14,7 +14,9 @@ public:
 
     enum class Type {
         Undefined,
-        Construction
+        Construction,
+        Repairing,
+        Cleaning
     };
 
     Event(Type type, bool calledByUser = false);
@@ -36,7 +38,7 @@ class ConstructionEvent : public Event
 public:
     ConstructionEvent(Site* site, Building::Type newBuilding);
 
-    bool canBeExecuted() const;
+    virtual bool canBeExecuted() const;
 
     Site* getSite() const;
     Building::Type getBuildingType() const;
@@ -46,4 +48,32 @@ private:
 
     Site* mSite;
     Building::Type mBuildingType;
+};
+
+class RepairingEvent : public Event
+{
+public:
+    RepairingEvent(Building* building, double repairRatio = 0.5);
+
+    virtual bool canBeExecuted() const;
+
+private:
+    virtual void execute();
+
+    double mRepairRatio;
+    Building* mBuilding;
+};
+
+class CleaningEvent : public Event
+{
+public:
+    CleaningEvent(Site* site, double cleanRatio = 1.0);
+
+    virtual bool canBeExecuted() const;
+
+private:
+    virtual void execute();
+
+    double mCleanRatio;
+    Site* mSite;
 };

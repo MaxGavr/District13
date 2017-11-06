@@ -6,10 +6,12 @@
 #include "building.h"
 
 class ConstructionEvent;
+class CleaningEvent;
 
 class Site
 {
     friend class ConstructionEvent;
+    friend class CleaningEvent;
 
 public:
     using Address = std::pair<int, int>;

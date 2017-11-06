@@ -2,7 +2,7 @@
 #include "../sites/site.h"
 
 /////////////////////////////////////////////////////////////////
-// Event
+/// Event
 /////////////////////////////////////////////////////////////////
 
 Event::Event(Type type, bool calledByUser)
@@ -22,7 +22,7 @@ bool Event::isInitializedByUser() const
 }
 
 /////////////////////////////////////////////////////////////////
-// ConstructionEvent
+/// ConstructionEvent
 /////////////////////////////////////////////////////////////////
 
 ConstructionEvent::ConstructionEvent(Site* site, Building::Type newBuilding)
@@ -52,4 +52,50 @@ Site* ConstructionEvent::getSite() const
 Building::Type ConstructionEvent::getBuildingType() const
 {
     return mBuildingType;
+}
+
+/////////////////////////////////////////////////////////////////
+/// RepairingEvent
+/////////////////////////////////////////////////////////////////
+
+RepairingEvent::RepairingEvent(Building *building, double repairRatio)
+    : Event(Event::Type::Repairing, true),
+      mBuilding(building),
+      mRepairRatio(repairRatio)
+{
+}
+
+bool RepairingEvent::canBeExecuted() const
+{
+    return mBuilding;
+}
+
+void RepairingEvent::execute()
+{
+    HappinessFactor& condition = mBuilding->mCondition;
+
+    condition.setValue(condition.getValue() + condition.getMaxValue() * mRepairRatio);
+}
+
+/////////////////////////////////////////////////////////////////
+/// CleaningEvent
+/////////////////////////////////////////////////////////////////
+
+CleaningEvent::CleaningEvent(Site* site, double cleanRatio)
+    : Event(Event::Type::Cleaning, true),
+      mSite(site),
+      mCleanRatio(cleanRatio)
+{
+}
+
+bool CleaningEvent::canBeExecuted() const
+{
+    return mSite;
+}
+
+void CleaningEvent::execute()
+{
+    HappinessFactor& cleanliness = mSite->mCleanliness;
+
+    cleanliness.setValue(cleanliness.getValue() + cleanliness.getMaxValue() * mCleanRatio);
 }

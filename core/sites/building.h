@@ -5,10 +5,13 @@
 #include <map>
 #include "../factor.h"
 
+class RepairingEvent;
 class Site;
 
 class Building
 {
+    friend class RepairingEvent;
+
 public:
     enum class Type {
         NONE = 0,
