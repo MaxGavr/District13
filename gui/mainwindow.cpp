@@ -41,10 +41,15 @@ void MainWindow::onNextTurn()
 
 void MainWindow::onEnqueueEvent(Event* event)
 {
+    if (!event)
+        return;
+
     mGame->enqueueEvent(event);
 
     EventLogger logger;
     printMessage(logger.getEventPreview(*event));
+
+    updateGameInfo();
 }
 
 void MainWindow::initializeWidgets()

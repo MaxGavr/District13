@@ -11,9 +11,10 @@
 #include <QGroupBox>
 #include <QMessageBox>
 
-SiteInfoDialog::SiteInfoDialog(Site* site, QWidget* parent)
+SiteInfoDialog::SiteInfoDialog(Site* site, int availableMoney, QWidget* parent)
     : QDialog(parent),
       mSite(site),
+      mMoney(availableMoney),
       mPopulationInfo(nullptr),
       mBuildingInfo(nullptr),
       mSiteInfo(nullptr)
@@ -65,7 +66,17 @@ void SiteInfoDialog::onShowBuildDialog()
 
     BuildDialog dialog(mSite);
     if (dialog.exec() == QDialog::Accepted)
+    {
+        Building::Type type = dialog.getChosenType();
+        if (mMoney < Building::getBuildCost(type))
+        {
+            QMessageBox::warning(this,
+                                 tr("Строительство"),
+                                 tr("Не хвататет средств!"));
+            return;
+        }
         buildEvent(dialog.getChosenType());
+    }
 }
 
 void SiteInfoDialog::fillPopulationInfo()

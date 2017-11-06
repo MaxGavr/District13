@@ -2,6 +2,7 @@
 
 #include <string>
 #include <list>
+#include <map>
 #include "../factor.h"
 
 class Site;
@@ -24,6 +25,8 @@ public:
     Building::Type getType() const;
     static TypeList getAllTypes();
 
+    static int getBuildCost(Building::Type type);
+
     bool isHouse() const;
     bool isPublic() const;
     bool canBeBuild() const;
@@ -42,6 +45,8 @@ protected:
     Site* mSite;
 
 private:
+    static const std::map<Building::Type, int> buildCosts;
+
     Building::Type mType;
     int mInfluenceArea;
 

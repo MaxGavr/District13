@@ -1,6 +1,20 @@
 #include "building.h"
 #include "site.h"
 
+const std::map<Building::Type, int> Building::buildCosts = {
+    { Building::Type::NONE, 0},
+    { Building::Type::HOUSE, 0},
+    { Building::Type::SHOP, 10},
+    { Building::Type::SCHOOL, 10},
+    { Building::Type::PARK, 10},
+    { Building::Type::FACTORY, 10}
+};
+
+int Building::getBuildCost(Building::Type type)
+{
+    return buildCosts.find(type)->second;
+}
+
 Building::Building(Site* site, Building::Type type, int influenceArea)
     : mSite(site),
       mType(type),

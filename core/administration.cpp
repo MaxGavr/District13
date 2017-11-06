@@ -85,7 +85,13 @@ void Administration::nextTurn()
 
 ConstructionEvent* Administration::constructBuilding(std::size_t x, std::size_t y, Building::Type type)
 {
+    if (mMoney < Building::getBuildCost(type))
+        return nullptr;
+
     Site* site = mDistrict->getSiteAt(x, y);
     auto event = new ConstructionEvent(site, type);
+
+    changeMoney(-Building::getBuildCost(type));
+
     return event;
 }

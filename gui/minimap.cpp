@@ -75,7 +75,7 @@ void DistrictMinimap::onSiteInfoShow()
     DistrictMinimapItem* mapItem = qobject_cast<DistrictMinimapItem*>(QObject::sender());
     Site* site = mapItem->getSite();
 
-    SiteInfoDialog dialog(site, this);
+    SiteInfoDialog dialog(site, mDistrict->getAdministration()->getCurrentMoney(), this);
     connect(&dialog, SIGNAL(buildEvent(Building::Type)), this, SLOT(onBuild(Building::Type)));
 
     Building* building = site->getBuilding();

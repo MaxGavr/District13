@@ -12,7 +12,7 @@ class SiteInfoDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SiteInfoDialog(Site* site, QWidget* parent = 0);
+    SiteInfoDialog(Site* site, int availableMoney, QWidget* parent = 0);
 
     Site* getSite() const;
 
@@ -28,6 +28,7 @@ private:
     void fillSiteInfo();
 
     Site* mSite;
+    int mMoney;
 
     QLabel* mHappinessLabel;
     QPushButton* mOkButton;

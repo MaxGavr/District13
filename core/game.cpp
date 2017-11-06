@@ -81,6 +81,9 @@ Game::EventQueue Game::getExecutedEvents() const
 
 void Game::enqueueEvent(Event* event)
 {
+    if (!event)
+        return;
+
     if (event->isInitializedByUser())
         mUserEvents.push_front(event);
     else
