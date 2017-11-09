@@ -28,7 +28,10 @@ public:
 
     Building(Site* site, Building::Type type, int influenceArea = 0);
 
+    Site* getSite() const;
+
     static int getBuildCost(Building::Type type);
+    int calcRepairCost(double repairRatio = 0.5) const;
 
     virtual bool isHouse() const = 0;
     virtual bool isPublic() const = 0;
@@ -37,6 +40,7 @@ public:
     int getInfluenceArea() const;
 
     HappinessFactor getCondition() const;
+    bool isPendingRepairing() const;
 
     virtual void addNeighbour(Building* neighbour);
     virtual void removeNeighbour(Building* neighbour);
@@ -51,6 +55,8 @@ private:
 
     Building::Type mType;
     int mInfluenceArea;
+
+    bool mPendingRepairing;
 
     HappinessFactor mCondition;
 };

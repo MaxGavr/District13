@@ -63,6 +63,8 @@ RepairingEvent::RepairingEvent(Building *building, double repairRatio)
       mBuilding(building),
       mRepairRatio(repairRatio)
 {
+    if (mBuilding)
+        mBuilding->mPendingRepairing = true;
 }
 
 bool RepairingEvent::canBeExecuted() const
@@ -70,11 +72,17 @@ bool RepairingEvent::canBeExecuted() const
     return mBuilding;
 }
 
+Building* RepairingEvent::getBuilding() const
+{
+    return mBuilding;
+}
+
 void RepairingEvent::execute()
 {
     HappinessFactor& condition = mBuilding->mCondition;
-
     condition.setValue(condition.getValue() + condition.getMaxValue() * mRepairRatio);
+
+    mBuilding->mPendingRepairing = false;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -86,6 +94,8 @@ CleaningEvent::CleaningEvent(Site* site, double cleanRatio)
       mSite(site),
       mCleanRatio(cleanRatio)
 {
+    if (mSite)
+        mSite->mPendingCleaning = true;
 }
 
 bool CleaningEvent::canBeExecuted() const
@@ -93,9 +103,15 @@ bool CleaningEvent::canBeExecuted() const
     return mSite;
 }
 
+Site* CleaningEvent::getSite() const
+{
+    return mSite;
+}
+
 void CleaningEvent::execute()
 {
     HappinessFactor& cleanliness = mSite->mCleanliness;
-
     cleanliness.setValue(cleanliness.getValue() + cleanliness.getMaxValue() * mCleanRatio);
+
+    mSite->mPendingCleaning = true;
 }

@@ -13,7 +13,6 @@ class DistrictMinimapItem;
 class Site;
 class Event;
 
-
 class DistrictMinimap : public QFrame
 {
     Q_OBJECT
@@ -34,15 +33,17 @@ public:
     virtual ~DistrictMinimap();
 
     void setDistrict(District* district);
+    DistrictMinimapItem* getSelectedItem() const;
 
     void updateMinimap();
     void highlightArea(int centerX, int centerY, int area, bool on = true);
 
 signals:
     void buildEvent(Event* event);
+    void siteSelected(Site* site);
 
 public slots:
-    void onSiteInfoShow();
+    void onSelectMinimapItem();
     void onBuild(Building::Type type);
 
 private:
@@ -53,6 +54,7 @@ private:
 
     size_t mMapSize;
     Minimap mMinimap;
+    DistrictMinimapItem* mSelectedItem;
 
     QVector<QLabel*> mMapIndices;
 

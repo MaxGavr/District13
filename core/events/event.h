@@ -57,6 +57,8 @@ public:
 
     virtual bool canBeExecuted() const;
 
+    Building* getBuilding() const;
+
 private:
     virtual void execute();
 
@@ -70,6 +72,8 @@ public:
     CleaningEvent(Site* site, double cleanRatio = 1.0);
 
     virtual bool canBeExecuted() const;
+
+    Site* getSite() const;
 
 private:
     virtual void execute();

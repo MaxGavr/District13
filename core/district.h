@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "sites/building.h"
+#include "sites/site.h"
 
 class Site;
 class Building;
@@ -23,7 +24,9 @@ public:
     Administration* getAdministration() const;
 
     Site* getSiteAt(std::size_t x, std::size_t y) const;
+    Site* getSiteAt(Site::Address address) const;
     Building* getBuildingAt(std::size_t x, std::size_t y) const;
+    Building* getBuildingAt(Site::Address address) const;
 
     SiteRow getAdjacentSites(Site* site, int distance) const;
 

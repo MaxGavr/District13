@@ -10,6 +10,7 @@ Site::Site(int posX, int posY)
     : mAddress({posX, posY}),
       mBuilding(nullptr),
       mPendingConstruction(false),
+      mPendingCleaning(false),
       mCleanliness(0, 100, 5, 100, 20)
 {
     mCleanliness.setValue(100);
@@ -28,6 +29,11 @@ bool Site::isOccupied() const
 bool Site::isPendingConstruction() const
 {
     return mPendingConstruction;
+}
+
+bool Site::isPendingCleaning() const
+{
+    return mPendingCleaning;
 }
 
 Building* Site::getBuilding() const
@@ -87,7 +93,12 @@ void Site::nextTurn()
     --mCleanliness;
 }
 
-HappinessFactor& Site::getPollution()
+HappinessFactor& Site::getCleanliness()
 {
     return mCleanliness;
+}
+
+int Site::calcCleaningCost() const
+{
+    return 10;
 }

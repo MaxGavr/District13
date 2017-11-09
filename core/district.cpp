@@ -46,9 +46,19 @@ Site* District::getSiteAt(size_t x, size_t y) const
     return mMap.at(x).at(y);
 }
 
+Site* District::getSiteAt(Site::Address address) const
+{
+    return getSiteAt(address.first, address.second);
+}
+
 Building* District::getBuildingAt(size_t x, size_t y) const
 {
     return getSiteAt(x, y)->getBuilding();
+}
+
+Building* District::getBuildingAt(Site::Address address) const
+{
+    return getSiteAt(address)->getBuilding();
 }
 
 District::SiteRow District::getAdjacentSites(Site* site, int distance) const

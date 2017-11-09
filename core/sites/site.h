@@ -22,19 +22,22 @@ public:
 
     bool isOccupied() const;
     bool isPendingConstruction() const;
+    bool isPendingCleaning() const;
     Building* getBuilding() const;
 
     bool constructBuilding(Building::Type type);
 
     void nextTurn();
 
-    HappinessFactor& getPollution();
+    HappinessFactor& getCleanliness();
+    int calcCleaningCost() const;
 
 private:
     Address mAddress;
-
     Building* mBuilding;
+
     bool mPendingConstruction;
+    bool mPendingCleaning;
 
     HappinessFactor mCleanliness;
 };

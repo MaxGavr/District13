@@ -15,12 +15,23 @@ int Building::getBuildCost(Building::Type type)
     return buildCosts.find(type)->second;
 }
 
+int Building::calcRepairCost(double repairRatio) const
+{
+    return Building::getBuildCost(mType) * 0.75 * repairRatio;
+}
+
 Building::Building(Site* site, Building::Type type, int influenceArea)
     : mSite(site),
       mType(type),
       mInfluenceArea(influenceArea),
+      mPendingRepairing(false),
       mCondition(0, 100, 5, 50, 30)
 {
+}
+
+Site* Building::getSite() const
+{
+    return mSite;
 }
 
 Building::Type Building::getType() const
@@ -49,10 +60,15 @@ HappinessFactor Building::getCondition() const
     return mCondition;
 }
 
+bool Building::isPendingRepairing() const
+{
+    return mPendingRepairing;
+}
+
 void Building::addNeighbour(Building* neighbour)
 {
     if (neighbour->getType() == Type::PARK)
-        mSite->getPollution().setStep(mSite->getPollution().getStep() * 0.5);
+        mSite->getCleanliness().setStep(mSite->getCleanliness().getStep() * 0.5);
 }
 
 void Building::removeNeighbour(Building* neighbour)

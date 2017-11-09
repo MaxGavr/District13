@@ -9,6 +9,8 @@ class QPushButton;
 class QTextEdit;
 class QLabel;
 class GameInfoWidget;
+class SiteInfoDialog;
+class ActionsWidget;
 
 class MainWindow : public QWidget
 {
@@ -24,6 +26,8 @@ public slots:
     void onNextTurn();
 
     void onEnqueueEvent(Event* event);
+
+    void onSelectSite(Site* site);
 
 private:
     void initializeWidgets();
@@ -44,4 +48,6 @@ private:
     QTextEdit* mLogWidget;
     QPushButton* mNextTurnButton;
     GameInfoWidget* mGameInfo;
+    SiteInfoDialog* mSiteInfo;
+    ActionsWidget* mActionsWidget;
 };

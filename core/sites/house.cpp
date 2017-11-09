@@ -19,7 +19,7 @@ int House::getHappiness() const
 std::vector<HappinessFactor> House::getFactors() const
 {
     std::vector<HappinessFactor> factors;
-    factors.push_back(mSite->getPollution());
+    factors.push_back(mSite->getCleanliness());
     factors.push_back(getCondition());
 
     for (PublicBuilding* building : mNearestBuildings)

@@ -2,7 +2,11 @@
 #include "minimap.h"
 #include "../core/game.h"
 #include "../core/administration.h"
+#include "../core/sites/site.h"
+#include "../core/sites/building.h"
 #include "gameinfowidget.h"
+#include "siteinfodialog.h"
+#include "actionswidget.h"
 
 #include <QGridLayout>
 #include <QMessageBox>
@@ -47,16 +51,38 @@ void MainWindow::onEnqueueEvent(Event* event)
     mGame->enqueueEvent(event);
 
     EventLogger logger;
-    printMessage(logger.getEventPreview(*event));
+    printMessage(logger.getEventLog(*event, true));
 
     updateGameInfo();
+}
+
+void MainWindow::onSelectSite(Site* site)
+{
+    DistrictMinimapItem* previouslySelected = mMinimapWidget->getSelectedItem();
+    if (previouslySelected && previouslySelected->getSite()->isOccupied())
+    {
+        Site* site = previouslySelected->getSite();
+        Site::Address addr = site->getAddress();
+        mMinimapWidget->highlightArea(addr.first, addr.second, site->getBuilding()->getInfluenceArea(), false);
+    }
+
+    mSiteInfo->showSiteInfo(site);
+    mActionsWidget->chooseActions(site);
+
+    Building* building = site->getBuilding();
+    if (building && building->affectsNeighbours())
+    {
+        Site::Address addr = site->getAddress();
+        mMinimapWidget->highlightArea(addr.first, addr.second, building->getInfluenceArea());
+    }
 }
 
 void MainWindow::initializeWidgets()
 {
     mMinimapWidget = new DistrictMinimap(mGame->getAdministration()->getDistrict(), this);
     mMinimapWidget->setObjectName("minimap");
-    connect(mMinimapWidget, SIGNAL(buildEvent(Event*)), this, SLOT(onEnqueueEvent(Event*)));
+    mMinimapWidget->layout()->setSizeConstraint(QLayout::SetFixedSize);
+    connect(mMinimapWidget, SIGNAL(siteSelected(Site*)), this, SLOT(onSelectSite(Site*)));
 
     mLogWidget = new QTextEdit(tr("Добро пожаловать в Район №13!"));
     mLogWidget->setReadOnly(true);
@@ -70,17 +96,26 @@ void MainWindow::initializeWidgets()
     mGameInfo = new GameInfoWidget(this);
     mGameInfo->setObjectName("gameinfo");
     mGameInfo->setCurrentTurn(mGame->getTurn());
+
+    mSiteInfo = new SiteInfoDialog(this);
+    mSiteInfo->hide();
+
+    mActionsWidget = new ActionsWidget(mGame->getAdministration(), this);
+    connect(mActionsWidget, SIGNAL(initEvent(Event*)), this, SLOT(onEnqueueEvent(Event*)));
 }
 
 void MainWindow::setupLayout()
 {
     auto mainLayout = new QGridLayout();
     //mainLayout->setContentsMargins(5, 5, 5, 20);
+    mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 
-    mainLayout->addWidget(mMinimapWidget, 0, 0, 1, 1);
-    mainLayout->addWidget(mNextTurnButton, 1, 1, 1, 1, Qt::AlignRight);
-    mainLayout->addWidget(mLogWidget, 1, 0, 1, 1);
-    mainLayout->addWidget(mGameInfo, 0, 1, 1, 1, Qt::AlignTop);
+    mainLayout->addWidget(mMinimapWidget, 0, 0, 3, 1);
+    mainLayout->addWidget(mNextTurnButton, 3, 1, 1, 1, Qt::AlignVCenter | Qt::AlignLeft);
+    mainLayout->addWidget(mLogWidget, 3, 0, 1, 1, Qt::AlignTop);
+    mainLayout->addWidget(mGameInfo, 0, 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
+    mainLayout->addWidget(mSiteInfo, 1, 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
+    mainLayout->addWidget(mActionsWidget, 2, 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
 
     setLayout(mainLayout);
 }

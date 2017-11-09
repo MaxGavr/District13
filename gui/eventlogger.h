@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../core/events/event.h"
+#include "../core/sites/site.h"
 
 #include <QObject>
 #include <QStringList>
@@ -14,10 +15,15 @@ public:
 
     EventLogger();
 
-    EventSummary getEventLog(const Event& event) const;
-    EventSummary getEventPreview(const Event& event) const;
+    EventSummary getEventLog(const Event& event, bool preview = false) const;
 
 private:
+    QString getAddressString(Site::Address address) const;
+
     EventSummary logConstructionEvent(const ConstructionEvent& event,
                                       bool preview = false) const;
+    EventSummary logRepairingEvent(const RepairingEvent& event,
+                                   bool preview = false) const;
+    EventSummary logCleaningEvent(const CleaningEvent& event,
+                                  bool preview = false) const;
 };

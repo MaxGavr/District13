@@ -1,6 +1,6 @@
 # pragma once
 
-#include <QDialog>
+#include <QFrame>
 #include "../core/sites/building.h"
 
 class Site;
@@ -8,31 +8,27 @@ class QLabel;
 class QPushButton;
 class QGroupBox;
 
-class SiteInfoDialog : public QDialog
+class SiteInfoDialog : public QFrame
 {
     Q_OBJECT
 public:
-    SiteInfoDialog(Site* site, int availableMoney, QWidget* parent = 0);
+    SiteInfoDialog(QWidget* parent = 0);
 
     Site* getSite() const;
-
-signals:
-    void buildEvent(Building::Type type);
-
-private slots:
-    void onShowBuildDialog();
+    void showSiteInfo(Site* site);
+    void clearSiteInfo();
 
 private:
     void fillPopulationInfo();
     void fillBuildingInfo();
     void fillSiteInfo();
 
+    void setupLayout();
+
     Site* mSite;
-    int mMoney;
 
     QLabel* mHappinessLabel;
     QPushButton* mOkButton;
-    QPushButton* mBuildButton;
 
     QGroupBox* mPopulationInfo;
     QGroupBox* mBuildingInfo;

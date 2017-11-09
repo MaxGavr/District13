@@ -11,42 +11,16 @@
 #include <QGroupBox>
 #include <QMessageBox>
 
-SiteInfoDialog::SiteInfoDialog(Site* site, int availableMoney, QWidget* parent)
-    : QDialog(parent),
-      mSite(site),
-      mMoney(availableMoney),
+SiteInfoDialog::SiteInfoDialog(QWidget* parent)
+    : QFrame(parent),
+      mSite(nullptr),
       mPopulationInfo(nullptr),
       mBuildingInfo(nullptr),
       mSiteInfo(nullptr)
 {   
-    Building::Type type = site->isOccupied() ? site->getBuilding()->getType() : Building::Type::NONE;
-    setWindowTitle(DistrictMinimap::getBuildingTitle(type));
-
-    fillSiteInfo();
-    fillBuildingInfo();
-    fillPopulationInfo();
-
-    auto buttonsLayout = new QHBoxLayout();
-
-    mOkButton = new QPushButton(tr("Ок"));
-    mOkButton->setDefault(true);
-    connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(close()));
-
-    if (!mSite->isOccupied())
-    {
-        mBuildButton = new QPushButton(tr("Построить"));
-        connect(mBuildButton, SIGNAL(clicked(bool)), this, SLOT(onShowBuildDialog()));
-        buttonsLayout->addWidget(mBuildButton, 0, Qt::AlignLeft);
-    }
-    buttonsLayout->addWidget(mOkButton, 0, Qt::AlignRight);
-
-    auto mainLayout = new QVBoxLayout();
-    if (mPopulationInfo)
-        mainLayout->addWidget(mPopulationInfo);
-    mainLayout->addWidget(mBuildingInfo);
-    mainLayout->addWidget(mSiteInfo);
-    mainLayout->addLayout(buttonsLayout);
-    setLayout(mainLayout);
+    //mOkButton = new QPushButton(tr("Ок"));
+    //mOkButton->setDefault(true);
+    //connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(close()));
 }
 
 Site* SiteInfoDialog::getSite() const
@@ -54,33 +28,33 @@ Site* SiteInfoDialog::getSite() const
     return mSite;
 }
 
-void SiteInfoDialog::onShowBuildDialog()
+void SiteInfoDialog::showSiteInfo(Site* site)
 {
-    if (mSite->isPendingConstruction())
-    {
-        QMessageBox::information(this,
-                                 tr("Строительство"),
-                                 tr("Строительство уже началось"));
+    if (!site)
         return;
-    }
 
-    BuildDialog dialog(mSite);
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        Building::Type type = dialog.getChosenType();
-        if (mMoney < Building::getBuildCost(type))
-        {
-            QMessageBox::warning(this,
-                                 tr("Строительство"),
-                                 tr("Не хвататет средств!"));
-            return;
-        }
-        buildEvent(dialog.getChosenType());
-    }
+    show();
+
+    mSite = site;
+
+    Building::Type type = mSite->isOccupied() ? mSite->getBuilding()->getType() : Building::Type::NONE;
+    setWindowTitle(DistrictMinimap::getBuildingTitle(type));
+
+    fillSiteInfo();
+    fillBuildingInfo();
+    fillPopulationInfo();
+
+    setupLayout();
 }
 
 void SiteInfoDialog::fillPopulationInfo()
 {
+    if (mPopulationInfo)
+    {
+        delete mPopulationInfo;
+        mPopulationInfo = nullptr;
+    }
+
     Building* building = mSite->getBuilding();
     if (!building || !building->isHouse())
         return;
@@ -94,13 +68,17 @@ void SiteInfoDialog::fillPopulationInfo()
     happinessLabel->setText(tr("Уровень счастья: ") + QString::number(house->getHappiness()));
     layout->addWidget(happinessLabel);
 
-
-
     mPopulationInfo->setLayout(layout);
 }
 
 void SiteInfoDialog::fillBuildingInfo()
 {
+    if (mBuildingInfo)
+    {
+        delete mBuildingInfo;
+        mBuildingInfo = nullptr;
+    }
+
     mBuildingInfo = new QGroupBox(tr("Здание"));
 
     QVBoxLayout* layout = new QVBoxLayout();
@@ -132,11 +110,17 @@ void SiteInfoDialog::fillBuildingInfo()
 
 void SiteInfoDialog::fillSiteInfo()
 {
+    if (mSiteInfo)
+    {
+        delete mSiteInfo;
+        mSiteInfo = nullptr;
+    }
+
     mSiteInfo = new QGroupBox(tr("Территория"));
 
     QVBoxLayout* layout = new QVBoxLayout();
 
-    const HappinessFactor pollution = mSite->getPollution();
+    const HappinessFactor pollution = mSite->getCleanliness();
     auto pollutionLabel = new QLabel();
     pollutionLabel->setText(
                 tr("Чистота: ") +
@@ -146,4 +130,23 @@ void SiteInfoDialog::fillSiteInfo()
 
     layout->addWidget(pollutionLabel);
     mSiteInfo->setLayout(layout);
+}
+
+void SiteInfoDialog::setupLayout()
+{
+    if (layout())
+        delete layout();
+
+    auto buttonsLayout = new QHBoxLayout();
+    //buttonsLayout->addWidget(mOkButton, 0, Qt::AlignRight);
+
+    auto mainLayout = new QVBoxLayout();
+    if (mPopulationInfo)
+        mainLayout->addWidget(mPopulationInfo);
+    if (mBuildingInfo)
+        mainLayout->addWidget(mBuildingInfo);
+    if (mSiteInfo)
+        mainLayout->addWidget(mSiteInfo);
+    mainLayout->addLayout(buttonsLayout);
+    setLayout(mainLayout);
 }

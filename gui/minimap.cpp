@@ -34,7 +34,8 @@ const DistrictMinimap::BuildingTypeToTitleMap DistrictMinimap::mTitleMap = {
 
 DistrictMinimap::DistrictMinimap(District* district, QWidget *parent)
     : QFrame(parent),
-      mDistrict(nullptr)
+      mDistrict(nullptr),
+      mSelectedItem(nullptr)
 {
     setDistrict(district);
 }
@@ -70,35 +71,25 @@ void DistrictMinimap::setDistrict(District* district)
     setupLayout();
 }
 
-void DistrictMinimap::onSiteInfoShow()
+DistrictMinimapItem* DistrictMinimap::getSelectedItem() const
+{
+    return mSelectedItem;
+}
+
+void DistrictMinimap::onSelectMinimapItem()
 {
     DistrictMinimapItem* mapItem = qobject_cast<DistrictMinimapItem*>(QObject::sender());
     Site* site = mapItem->getSite();
 
-    SiteInfoDialog dialog(site, mDistrict->getAdministration()->getCurrentMoney(), this);
-    connect(&dialog, SIGNAL(buildEvent(Building::Type)), this, SLOT(onBuild(Building::Type)));
-
-    Building* building = site->getBuilding();
-    if (building && building->affectsNeighbours())
-    {
-        Site::Address addr = site->getAddress();
-        int area = building->getInfluenceArea();
-        highlightArea(addr.first, addr.second, area, true);
-
-        dialog.exec();
-
-        highlightArea(addr.first, addr.second, area, false);
-    }
-    else
-        dialog.exec();
+    siteSelected(site);
+    mSelectedItem = mapItem;
 }
 
 void DistrictMinimap::onBuild(Building::Type type)
 {   
     const Site* site = qobject_cast<SiteInfoDialog*>(QObject::sender())->getSite();
 
-    const Site::Address address = site->getAddress();
-    Event* event = mDistrict->getAdministration()->constructBuilding(address.first, address.second, type);
+    Event* event = mDistrict->getAdministration()->constructBuilding(site->getAddress(), type);
 
     buildEvent(event);
 }
@@ -147,8 +138,8 @@ void DistrictMinimap::highlightArea(int centerX, int centerY, int area, bool on)
     for (int i = centerX - area; i <= centerX + area; ++i)
         for (int j = centerY - area; j <= centerY + area; ++j)
         {
-            if (i == centerX && j == centerY)
-                continue;
+//            if (i == centerX && j == centerY)
+//                continue;
             try
             {
                 mMinimap.at(i).at(j)->highlight(on);
@@ -188,7 +179,7 @@ QString DistrictMinimap::getBuildingTitle(Building::Type type)
 DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
     : QPushButton(minimap), mMinimap(minimap), mSite(site)
 {
-    const QSize pictureSize = QSize(54, 54);
+    const QSize pictureSize = QSize(52, 52);
 
     setContentsMargins(0, 0, 0, 0);
     setMinimumSize(pictureSize);
@@ -200,7 +191,7 @@ DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
     setFlat(true);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    connect(this, SIGNAL(clicked()), mMinimap, SLOT(onSiteInfoShow()));
+    connect(this, SIGNAL(clicked(bool)), mMinimap, SLOT(onSelectMinimapItem()));
 }
 
 Site* DistrictMinimapItem::getSite() const

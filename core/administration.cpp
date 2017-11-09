@@ -83,15 +83,45 @@ void Administration::nextTurn()
     changeMoney(calcIncome());
 }
 
-ConstructionEvent* Administration::constructBuilding(std::size_t x, std::size_t y, Building::Type type)
+ConstructionEvent* Administration::constructBuilding(Site::Address address, Building::Type type)
 {
     if (mMoney < Building::getBuildCost(type))
         return nullptr;
 
-    Site* site = mDistrict->getSiteAt(x, y);
+    Site* site = mDistrict->getSiteAt(address);
     auto event = new ConstructionEvent(site, type);
 
     changeMoney(-Building::getBuildCost(type));
+
+    return event;
+}
+
+RepairingEvent* Administration::repairBuilding(Site::Address address)
+{
+    Building* building = mDistrict->getBuildingAt(address);
+    if (!building || building->getCondition().getValue() == building->getCondition().getMaxValue())
+        return nullptr;
+
+    if (mMoney < building->calcRepairCost())
+        return nullptr;
+
+    auto event = new RepairingEvent(building);
+    changeMoney(-building->calcRepairCost());
+
+    return event;
+}
+
+CleaningEvent* Administration::cleanSite(Site::Address address)
+{
+    Site* site = mDistrict->getSiteAt(address);
+    if (site->getCleanliness().getValue() == site->getCleanliness().getMaxValue())
+        return nullptr;
+
+    if (mMoney < site->calcCleaningCost())
+        return nullptr;
+
+    auto event = new CleaningEvent(site);
+    changeMoney(-site->calcCleaningCost());
 
     return event;
 }
