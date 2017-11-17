@@ -54,6 +54,7 @@ void DistrictMinimap::setDistrict(District* district)
 {
     Q_ASSERT(district);
     mDistrict = district;
+    mSelectedItem = nullptr;
 
     for (MinimapRow& row : mMinimap)
         for (DistrictMinimapItem* mapItem : row)
@@ -76,22 +77,26 @@ DistrictMinimapItem* DistrictMinimap::getSelectedItem() const
     return mSelectedItem;
 }
 
-void DistrictMinimap::onSelectMinimapItem()
+void DistrictMinimap::onClickMinimapItem()
 {
+    // remove selection from previously selected site
+    if (mSelectedItem)
+    {
+        Site* previous = mSelectedItem->getSite();
+        int area = previous->getBuilding() ? previous->getBuilding()->getInfluenceArea() : 0;
+        highlightArea(previous->getAddress(), area, false);
+    }
+
     DistrictMinimapItem* mapItem = qobject_cast<DistrictMinimapItem*>(QObject::sender());
+    mSelectedItem = mapItem;
+
     Site* site = mapItem->getSite();
 
+    // highlight area around selected site
+    int area = site->getBuilding() ? site->getBuilding()->getInfluenceArea() : 0;
+    highlightArea(site->getAddress(), area, true);
+
     siteSelected(site);
-    mSelectedItem = mapItem;
-}
-
-void DistrictMinimap::onBuild(Building::Type type)
-{   
-    const Site* site = qobject_cast<SiteInfoDialog*>(QObject::sender())->getSite();
-
-    Event* event = mDistrict->getAdministration()->constructBuilding(site->getAddress(), type);
-
-    buildEvent(event);
 }
 
 void DistrictMinimap::setupLayout()
@@ -128,6 +133,8 @@ void DistrictMinimap::setupLayout()
 
 void DistrictMinimap::updateMinimap()
 {
+    //onClickMinimapItem(nullptr);
+
     for (size_t i = 0; i < mMapSize; ++i)
         for (size_t j = 0; j < mMapSize; ++j)
             mMinimap.at(i).at(j)->updatePicture();
@@ -138,8 +145,6 @@ void DistrictMinimap::highlightArea(int centerX, int centerY, int area, bool on)
     for (int i = centerX - area; i <= centerX + area; ++i)
         for (int j = centerY - area; j <= centerY + area; ++j)
         {
-//            if (i == centerX && j == centerY)
-//                continue;
             try
             {
                 mMinimap.at(i).at(j)->highlight(on);
@@ -149,6 +154,16 @@ void DistrictMinimap::highlightArea(int centerX, int centerY, int area, bool on)
                 continue;
             }
         }
+}
+
+void DistrictMinimap::highlightArea(Site::Address address, int area, bool on)
+{
+    highlightArea(address.first, address.second, area, on);
+}
+
+void DistrictMinimap::selectMinimapItem()
+{
+
 }
 
 QPixmap DistrictMinimap::getBuildingImage(Building::Type type)
@@ -177,21 +192,19 @@ QString DistrictMinimap::getBuildingTitle(Building::Type type)
 }
 
 DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
-    : QPushButton(minimap), mMinimap(minimap), mSite(site)
+    : QPushButton(minimap), mSite(site)
 {
-    const QSize pictureSize = QSize(52, 52);
-
     setContentsMargins(0, 0, 0, 0);
-    setMinimumSize(pictureSize);
-    setMaximumSize(pictureSize);
-    setIconSize(pictureSize);
+    setMinimumSize(getSize());
+    setMaximumSize(getSize());
+    setIconSize(getSize());
 
     updatePicture();
 
     setFlat(true);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    connect(this, SIGNAL(clicked(bool)), mMinimap, SLOT(onSelectMinimapItem()));
+    connect(this, SIGNAL(clicked(bool)), minimap, SLOT(onSelectMinimapItem()));
 }
 
 Site* DistrictMinimapItem::getSite() const

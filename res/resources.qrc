@@ -8,5 +8,8 @@
         <file>time.png</file>
         <file>sad_face.png</file>
         <file>factory.png</file>
+        <file>repair.png</file>
+        <file>crane.png</file>
+        <file>broom.png</file>
     </qresource>
 </RCC>

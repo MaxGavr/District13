@@ -16,7 +16,7 @@ Event::Type Event::getType() const
     return mType;
 }
 
-bool Event::isInitializedByUser() const
+bool Event::isCalledByUser() const
 {
     return mUser;
 }

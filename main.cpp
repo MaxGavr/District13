@@ -10,7 +10,12 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    Game game(20);
+    const int happinessGoal = 20;
+    const int districtSize = 10;
+    const int startMoney = 50;
+    const int maxIncome = 10;
+
+    Game game(districtSize, happinessGoal, startMoney, maxIncome);
 
     MainWindow w(&game);
     w.show();

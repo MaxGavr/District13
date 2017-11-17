@@ -3,8 +3,22 @@
 
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QMessageBox>
 
-BuildDialog::BuildDialog(Site* site)
+const QMap<Building::Type, QString> BuildDialog::mBuildDescription =
+{
+    { Building::Type::SHOP,
+      tr("Значительно увеличивает счастье домов в небольшом радиусе.") },
+    { Building::Type::SCHOOL,
+      tr("Значительно увеличивает счастье домов в большом радиусе.") },
+    { Building::Type::FACTORY,
+      tr("Каждый ход приносит доход, зависящий от состояния завода. Уменьшает счастье соседних домов.") },
+    { Building::Type::PARK,
+      tr("В два раза замедляет загрязнение участков и незначительно увеличивает счастье домов в большом радиусе.") },
+};
+
+
+BuildDialog::BuildDialog()
     : mChosenType(Building::Type::NONE)
 {
     setWindowTitle(tr("Построить"));
@@ -41,7 +55,17 @@ void BuildDialog::onChooseBuilding()
 {
     QPushButton* pushedButton = qobject_cast<QPushButton*>(QObject::sender());
     mChosenType = mBuildButtons[pushedButton];
-    accept();
+
+    QString description = mBuildDescription[mChosenType];
+
+    QMessageBox info(this);
+    info.setText(description + tr("\nСтоимость: %1").arg(Building::getBuildCost(mChosenType)));
+    info.setWindowTitle(DistrictMinimap::getBuildingTitle(mChosenType));
+    info.setIconPixmap(DistrictMinimap::getBuildingImage(mChosenType));
+    info.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+
+    if (info.exec() == QMessageBox::Ok)
+        accept();
 }
 
 Building::Type BuildDialog::getChosenType() const

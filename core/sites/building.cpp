@@ -3,11 +3,11 @@
 
 const std::map<Building::Type, int> Building::buildCosts = {
     { Building::Type::NONE, 0},
-    { Building::Type::HOUSE, 0},
-    { Building::Type::SHOP, 10},
-    { Building::Type::SCHOOL, 10},
-    { Building::Type::PARK, 10},
-    { Building::Type::FACTORY, 10}
+    { Building::Type::HOUSE, 10},
+    { Building::Type::SHOP, 15},
+    { Building::Type::SCHOOL, 20},
+    { Building::Type::PARK, 30},
+    { Building::Type::FACTORY, 25}
 };
 
 int Building::getBuildCost(Building::Type type)
@@ -25,7 +25,7 @@ Building::Building(Site* site, Building::Type type, int influenceArea)
       mType(type),
       mInfluenceArea(influenceArea),
       mPendingRepairing(false),
-      mCondition(0, 100, 5, 50, 30)
+      mCondition(0, 100, 3, 75, 30)
 {
 }
 

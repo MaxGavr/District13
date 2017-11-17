@@ -36,10 +36,14 @@ void MainWindow::onNextTurn()
     if (!mGame->nextTurn())
         gameOver();
 
-    printMessage(tr("Ход ") + QString::number(mGame->getTurn()));
+    printMessage(tr("<b>Ход №%1</b>").arg(mGame->getTurn()));
     updateGameInfo();
     printTurnSummary();
 
+    if (mMinimapWidget->getSelectedItem())
+        onSelectSite(mMinimapWidget->getSelectedItem()->getSite());
+    else
+        onSelectSite(nullptr);
     mMinimapWidget->updateMinimap();
 }
 
@@ -59,21 +63,39 @@ void MainWindow::onEnqueueEvent(Event* event)
 void MainWindow::onSelectSite(Site* site)
 {
     DistrictMinimapItem* previouslySelected = mMinimapWidget->getSelectedItem();
-    if (previouslySelected && previouslySelected->getSite()->isOccupied())
+    if (previouslySelected)
     {
         Site* site = previouslySelected->getSite();
         Site::Address addr = site->getAddress();
-        mMinimapWidget->highlightArea(addr.first, addr.second, site->getBuilding()->getInfluenceArea(), false);
+        int area = 0;
+        if (site->getBuilding())
+            area = site->getBuilding()->getInfluenceArea();
+        mMinimapWidget->highlightArea(addr.first, addr.second, area, false);
     }
 
     mSiteInfo->showSiteInfo(site);
     mActionsWidget->chooseActions(site);
 
-    Building* building = site->getBuilding();
-    if (building && building->affectsNeighbours())
+    if (site)
     {
-        Site::Address addr = site->getAddress();
-        mMinimapWidget->highlightArea(addr.first, addr.second, building->getInfluenceArea());
+        int area = 0;
+        if (site->getBuilding())
+            area = site->getBuilding()->getInfluenceArea();
+        mMinimapWidget->highlightArea(site->getAddress().first, site->getAddress().second, area);
+    }
+}
+
+void MainWindow::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+    static bool firstStart = true;
+    if (firstStart)
+    {
+        QMessageBox::information(this,
+                                 tr("Цель игры"),
+                                 tr("Ваша задача - не дать счастью жителей района опуститься ниже %1.\n").arg(mGame->getHappinessGoal()) +
+                                 tr("Для этого стройте объекты инфраструктуры и следите за состоянием зданий и участков."));
+        firstStart = false;
     }
 }
 
@@ -90,7 +112,7 @@ void MainWindow::initializeWidgets()
     mNextTurnButton = new QPushButton(tr("Следующий ход"));
     mNextTurnButton->setToolTip(tr("Текущий ход - ") + QString::number(mGame->getTurn()));
     mNextTurnButton->setIcon(QIcon(":/res/icons/time"));
-    mNextTurnButton->setIconSize(QSize(20, 20));
+    mNextTurnButton->setIconSize(QSize(30, 30));
     connect(mNextTurnButton, SIGNAL(clicked(bool)), this, SLOT(onNextTurn()));
 
     mGameInfo = new GameInfoWidget(this);
@@ -99,19 +121,20 @@ void MainWindow::initializeWidgets()
 
     mSiteInfo = new SiteInfoDialog(this);
     mSiteInfo->hide();
+    connect(mMinimapWidget, SIGNAL(siteSelected(Site*)), mSiteInfo, SLOT(showSiteInfo(Site*)));
 
     mActionsWidget = new ActionsWidget(mGame->getAdministration(), this);
     connect(mActionsWidget, SIGNAL(initEvent(Event*)), this, SLOT(onEnqueueEvent(Event*)));
+    connect(mMinimapWidget, SIGNAL(siteSelected(Site*)), mActionsWidget, SLOT(chooseActions(Site*)));
 }
 
 void MainWindow::setupLayout()
 {
     auto mainLayout = new QGridLayout();
-    //mainLayout->setContentsMargins(5, 5, 5, 20);
     mainLayout->setSizeConstraint(QLayout::SetFixedSize);
 
     mainLayout->addWidget(mMinimapWidget, 0, 0, 3, 1);
-    mainLayout->addWidget(mNextTurnButton, 3, 1, 1, 1, Qt::AlignVCenter | Qt::AlignLeft);
+    mainLayout->addWidget(mNextTurnButton, 3, 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(mLogWidget, 3, 0, 1, 1, Qt::AlignTop);
     mainLayout->addWidget(mGameInfo, 0, 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
     mainLayout->addWidget(mSiteInfo, 1, 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
@@ -165,6 +188,7 @@ void MainWindow::restart()
 
     mGame->restartGame();
     mMinimapWidget->setDistrict(mGame->getAdministration()->getDistrict());
+    mActionsWidget->setAdministration(mGame->getAdministration());
     updateGameInfo();
 }
 

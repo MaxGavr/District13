@@ -1,8 +1,8 @@
 #include "siteinfodialog.h"
+#include "builddialog.h"
+#include "minimap.h"
 #include "../core/sites/house.h"
 #include "../core/sites/site.h"
-#include "minimap.h"
-#include "builddialog.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -18,9 +18,6 @@ SiteInfoDialog::SiteInfoDialog(QWidget* parent)
       mBuildingInfo(nullptr),
       mSiteInfo(nullptr)
 {   
-    //mOkButton = new QPushButton(tr("Ок"));
-    //mOkButton->setDefault(true);
-    //connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(close()));
 }
 
 Site* SiteInfoDialog::getSite() const
@@ -29,9 +26,12 @@ Site* SiteInfoDialog::getSite() const
 }
 
 void SiteInfoDialog::showSiteInfo(Site* site)
-{
+{   
     if (!site)
+    {
+        hide();
         return;
+    }
 
     show();
 
@@ -137,9 +137,6 @@ void SiteInfoDialog::setupLayout()
     if (layout())
         delete layout();
 
-    auto buttonsLayout = new QHBoxLayout();
-    //buttonsLayout->addWidget(mOkButton, 0, Qt::AlignRight);
-
     auto mainLayout = new QVBoxLayout();
     if (mPopulationInfo)
         mainLayout->addWidget(mPopulationInfo);
@@ -147,6 +144,5 @@ void SiteInfoDialog::setupLayout()
         mainLayout->addWidget(mBuildingInfo);
     if (mSiteInfo)
         mainLayout->addWidget(mSiteInfo);
-    mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
 }

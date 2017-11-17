@@ -22,7 +22,7 @@ public:
     Event(Type type, bool calledByUser = false);
 
     Type getType() const;
-    bool isInitializedByUser() const;
+    bool isCalledByUser() const;
 
     virtual bool canBeExecuted() const = 0;
 

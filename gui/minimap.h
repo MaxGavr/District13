@@ -5,6 +5,7 @@
 #include <QPushButton>
 
 #include "../core/sites/building.h"
+#include "../core/sites/site.h"
 
 class QLabel;
 
@@ -36,15 +37,16 @@ public:
     DistrictMinimapItem* getSelectedItem() const;
 
     void updateMinimap();
-    void highlightArea(int centerX, int centerY, int area, bool on = true);
+    void highlightArea(int centerX, int centerY, int area = 0, bool on = true);
+    void highlightArea(Site::Address address, int area = 0, bool on = true);
 
-signals:
-    void buildEvent(Event* event);
-    void siteSelected(Site* site);
+    void selectMinimapItem();
 
 public slots:
-    void onSelectMinimapItem();
-    void onBuild(Building::Type type);
+    void onClickMinimapItem();
+
+signals:
+    void siteSelected(Site* site);
 
 private:
     void setupLayout();
@@ -70,12 +72,13 @@ class DistrictMinimapItem : public QPushButton
 public:
     DistrictMinimapItem(Site* site, DistrictMinimap* minimap);
 
+    static QSize getSize() { return QSize(48, 48); }
+
     Site* getSite() const;
 
     void highlight(bool on = true);
     void updatePicture();
 
 private:
-    DistrictMinimap* mMinimap;
     Site* mSite;
 };

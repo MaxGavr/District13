@@ -20,7 +20,7 @@ void PublicBuilding::nextTurn()
 Shop::Shop(Site* site)
     : PublicBuilding(site, Building::Type::SHOP, 2)
 {
-    mFactor = HappinessFactor(1, 1, 0, 0, 20);
+    mFactor = HappinessFactor(1, 1, 0, 0, 15);
     mFactor.setValue(mFactor.getMaxValue());
 }
 
@@ -42,7 +42,7 @@ Factory::Factory(Site* site)
     : PublicBuilding(site, Building::Type::FACTORY, 1),
       mIsNearShop(false)
 {
-    mFactor = HappinessFactor(0, 1, 0, 1, 10);
+    mFactor = HappinessFactor(0, 1, 0, 1, 15);
     mFactor.setValue(mFactor.getMinValue());
 }
 

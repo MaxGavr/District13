@@ -6,7 +6,9 @@
 #include "sites/industrialbuilding.h"
 
 Administration::Administration(District* district, int startMoney, int maxIncome)
-    : mDistrict(district), mMoney(startMoney), mMaxIncome(maxIncome)
+    : mDistrict(district),
+      mMoney(startMoney),
+      mMaxIncome(maxIncome)
 {
     if (mDistrict)
         mDistrict->setAdministration(this);
@@ -16,11 +18,6 @@ Administration::~Administration()
 {
     if (mDistrict)
         delete mDistrict;
-}
-
-District* Administration::getDistrict() const
-{
-    return mDistrict;
 }
 
 int Administration::calcAverageHappiness() const
@@ -46,10 +43,10 @@ int Administration::calcAverageHappiness() const
 
 int Administration::calcIncome() const
 {
-    int happiness = calcAverageHappiness();
-    int maxHappiness = House::getMaxHappiness();
+    const int happiness = calcAverageHappiness();
+    const int maxHappiness = House::getMaxHappiness();
 
-    int baseIncome = (double)happiness / maxHappiness * mMaxIncome;
+    const int baseIncome = (double)happiness / maxHappiness * mMaxIncome;
 
     int factoryIncome = 0;
     for (size_t i = 0; i < mDistrict->getSize(); ++i)
@@ -65,11 +62,6 @@ int Administration::calcIncome() const
     return baseIncome + factoryIncome;
 }
 
-int Administration::getCurrentMoney() const
-{
-    return mMoney;
-}
-
 void Administration::changeMoney(int amount)
 {
     mMoney += amount;
@@ -83,9 +75,37 @@ void Administration::nextTurn()
     changeMoney(calcIncome());
 }
 
-ConstructionEvent* Administration::constructBuilding(Site::Address address, Building::Type type)
+QList<Event::Type> Administration::getAvailableActions(const Site* targetSite) const
+{
+    QList<Event::Type> availableActions;
+    if (!targetSite)
+        return availableActions;
+
+    availableActions.append(Event::Type::Cleaning);
+
+    if (targetSite->isOccupied())
+        availableActions.append(Event::Type::Repairing);
+    else
+        availableActions.append(Event::Type::Construction);
+
+    return availableActions;
+}
+
+Administration::CheckResult Administration::canConstructBuilding(Site::Address address, Building::Type type) const
 {
     if (mMoney < Building::getBuildCost(type))
+        return CheckResult::NOT_ENOUGH_MONEY;
+
+    Site* site = mDistrict->getSiteAt(address);
+    if (site->isPendingConstruction())
+        return CheckResult::ALREADY_STARTED;
+
+    return CheckResult::SUCCESS;
+}
+
+ConstructionEvent* Administration::constructBuilding(Site::Address address, Building::Type type)
+{
+    if (canConstructBuilding(address, type) != CheckResult::SUCCESS)
         return nullptr;
 
     Site* site = mDistrict->getSiteAt(address);
@@ -96,14 +116,26 @@ ConstructionEvent* Administration::constructBuilding(Site::Address address, Buil
     return event;
 }
 
-RepairingEvent* Administration::repairBuilding(Site::Address address)
+Administration::CheckResult Administration::canRepairBuilding(Site::Address address) const
 {
     Building* building = mDistrict->getBuildingAt(address);
-    if (!building || building->getCondition().getValue() == building->getCondition().getMaxValue())
+    if (mMoney < building->calcRepairCost())
+        return CheckResult::NOT_ENOUGH_MONEY;
+
+    if (building->isPendingRepairing())
+        return CheckResult::ALREADY_STARTED;
+    if (building->getCondition().getValue() == building->getCondition().getMaxValue())
+        return CheckResult::MAX_VALUE;
+
+    return CheckResult::SUCCESS;
+}
+
+RepairingEvent* Administration::repairBuilding(Site::Address address)
+{
+    if (canRepairBuilding(address) != CheckResult::SUCCESS)
         return nullptr;
 
-    if (mMoney < building->calcRepairCost())
-        return nullptr;
+    Building* building = mDistrict->getBuildingAt(address);
 
     auto event = new RepairingEvent(building);
     changeMoney(-building->calcRepairCost());
@@ -111,14 +143,26 @@ RepairingEvent* Administration::repairBuilding(Site::Address address)
     return event;
 }
 
-CleaningEvent* Administration::cleanSite(Site::Address address)
+Administration::CheckResult Administration::canCleanSite(Site::Address address) const
 {
     Site* site = mDistrict->getSiteAt(address);
+    if (mMoney < site->calcCleaningCost())
+        return CheckResult::NOT_ENOUGH_MONEY;
+
+    if (site->isPendingCleaning())
+        return CheckResult::ALREADY_STARTED;
     if (site->getCleanliness().getValue() == site->getCleanliness().getMaxValue())
+        return CheckResult::MAX_VALUE;
+
+    return CheckResult::SUCCESS;
+}
+
+CleaningEvent* Administration::cleanSite(Site::Address address)
+{
+    if (canCleanSite(address) != CheckResult::SUCCESS)
         return nullptr;
 
-    if (mMoney < site->calcCleaningCost())
-        return nullptr;
+    Site* site = mDistrict->getSiteAt(address);
 
     auto event = new CleaningEvent(site);
     changeMoney(-site->calcCleaningCost());

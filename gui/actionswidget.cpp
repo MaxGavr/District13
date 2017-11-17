@@ -17,10 +17,15 @@ ActionsWidget::ActionsWidget(Administration* admin, QWidget* parent)
 {
     mActionsGroupbox = new QGroupBox(tr("Действия"), this);
 
-    QVBoxLayout* mGroupboxLayout = new QVBoxLayout(mActionsGroupbox);
+    new QVBoxLayout(mActionsGroupbox);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(mActionsGroupbox);
+}
+
+void ActionsWidget::setAdministration(Administration* admin)
+{
+    mAdmin = admin;
 }
 
 void ActionsWidget::chooseActions(Site* targetSite)
@@ -33,70 +38,126 @@ void ActionsWidget::chooseActions(Site* targetSite)
     if (!mTargetSite)
         return;
 
-    Building* building = mTargetSite->getBuilding();
+    QList<Event::Type> actionTypes = mAdmin->getAvailableActions(mTargetSite);
 
     // build action
-    if (!building && !mTargetSite->isPendingConstruction())
+    if (actionTypes.contains(Event::Type::Construction))
     {
-        QPushButton* buildButton = new QPushButton(tr("Построить"));
-        connect(buildButton, SIGNAL(clicked(bool)), this, SLOT(onShowBuildDialog()));
-
-        mActions.append(buildButton);
-        layout()->addWidget(buildButton);
+        mActions.push_back(addAction(QIcon(":/res/icons/crane"), tr("Построить")));
+        connect(mActions.back(), SIGNAL(clicked(bool)), this, SLOT(onShowBuildDialog()));
     }
 
     // repair action
-    if (building &&
-        building->getCondition().getValue() != building->getCondition().getMaxValue() &&
-        !building->isPendingRepairing())
+    if (actionTypes.contains(Event::Type::Repairing))
     {
-        QPushButton* repairButton = new QPushButton(tr("Ремонт"));
-        connect(repairButton, SIGNAL(clicked(bool)), this, SLOT(onRepairBuilding()));
-
-        mActions.append(repairButton);
-        layout()->addWidget(repairButton);
+        mActions.push_back(addAction(QIcon(":/res/icons/repair"), tr("Ремонт")));
+        connect(mActions.back(), SIGNAL(clicked(bool)), this, SLOT(onRepairBuilding()));
     }
 
     // clean action
-    if (mTargetSite->getCleanliness().getValue() != mTargetSite->getCleanliness().getMaxValue() &&
-        !mTargetSite->isPendingCleaning())
+    if (actionTypes.contains(Event::Type::Cleaning))
     {
-        QPushButton* cleanButton = new QPushButton(tr("Уборка"));
-        connect(cleanButton, SIGNAL(clicked(bool)), this, SLOT(onCleanSite()));
-
-        mActions.append(cleanButton);
-        layout()->addWidget(cleanButton);
+        mActions.push_back(addAction(QIcon(":/res/icons/broom"), tr("Уборка")));
+        connect(mActions.back(), SIGNAL(clicked(bool)), this, SLOT(onCleanSite()));
     }
+
+    foreach (QPushButton* action, mActions)
+        layout()->addWidget(action);
+}
+
+QPushButton* ActionsWidget::addAction(QIcon icon, QString title)
+{
+    QPushButton* action = new QPushButton(icon, title);
+    action->setIconSize(QSize(30, 30));
+
+    return action;
 }
 
 void ActionsWidget::onShowBuildDialog()
 {
-    BuildDialog dialog(mTargetSite);
-    if (dialog.exec() == QDialog::Accepted)
+    using Result = Administration::CheckResult;
+
+    BuildDialog dialog;
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    Building::Type type = dialog.getChosenType();
+    Site::Address address = mTargetSite->getAddress();
+
+    Result result = mAdmin->canConstructBuilding(address, type);
+
+    QString warningMessage;
+    switch (result)
     {
-        Building::Type type = dialog.getChosenType();
-        if (mAdmin->getCurrentMoney() < Building::getBuildCost(type))
-        {
-            QMessageBox::warning(this,
-                                 tr("Строительство"),
-                                 tr("Не хвататет средств!"));
-            return;
-        }
-
-        initEvent(mAdmin->constructBuilding(mTargetSite->getAddress(), dialog.getChosenType()));
-
-        chooseActions(mTargetSite);
+    case Result::SUCCESS:
+        initEvent(mAdmin->constructBuilding(address, type));
+        return;
+    case Result::NOT_ENOUGH_MONEY:
+        warningMessage = tr("Не хватает средств!");
+        break;
+    case Result::ALREADY_STARTED:
+        warningMessage = tr("На участке уже ведется строительство!");
+        break;
     }
+    QMessageBox::information(this,
+                             tr("Строительство"),
+                             warningMessage);
 }
 
 void ActionsWidget::onRepairBuilding()
 {
-    initEvent(mAdmin->repairBuilding(mTargetSite->getAddress()));
-    chooseActions(mTargetSite);
+    using Result = Administration::CheckResult;
+
+    Site::Address address = mTargetSite->getAddress();
+
+    Result result = mAdmin->canRepairBuilding(address);
+
+    QString warningMessage;
+    switch (result)
+    {
+    case Result::SUCCESS:
+        initEvent(mAdmin->repairBuilding(address));
+        return;
+    case Result::NOT_ENOUGH_MONEY:
+        warningMessage = tr("Не хватает средств!");
+        break;
+    case Result::ALREADY_STARTED:
+        warningMessage = tr("Ремонт уже начался!");
+        break;
+    case Result::MAX_VALUE:
+        warningMessage = tr("Здание в наилучшем состоянии!");
+        break;
+    }
+    QMessageBox::information(this,
+                             tr("Ремонт"),
+                             warningMessage);
 }
 
 void ActionsWidget::onCleanSite()
 {
-    initEvent(mAdmin->cleanSite(mTargetSite->getAddress()));
-    chooseActions(mTargetSite);
+    using Result = Administration::CheckResult;
+
+    Site::Address address = mTargetSite->getAddress();
+
+    Result result = mAdmin->canCleanSite(address);
+
+    QString warningMessage;
+    switch (result)
+    {
+    case Result::SUCCESS:
+        initEvent(mAdmin->cleanSite(address));
+        return;
+    case Result::NOT_ENOUGH_MONEY:
+        warningMessage = tr("Не хватает средств!");
+        break;
+    case Result::ALREADY_STARTED:
+        warningMessage = tr("Уборка уже началась!");
+        break;
+    case Result::MAX_VALUE:
+        warningMessage = tr("Участок достаточно чист!");
+        break;
+    }
+    QMessageBox::information(this,
+                             tr("Уборка"),
+                             warningMessage);
 }

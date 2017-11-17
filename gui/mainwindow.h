@@ -29,6 +29,9 @@ public slots:
 
     void onSelectSite(Site* site);
 
+protected:
+    virtual void showEvent(QShowEvent *event);
+
 private:
     void initializeWidgets();
     void setupLayout();

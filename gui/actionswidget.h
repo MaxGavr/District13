@@ -15,6 +15,9 @@ class ActionsWidget : public QFrame
 public:
     ActionsWidget(Administration* admin, QWidget* parent = 0);
 
+    void setAdministration(Administration* admin);
+
+public slots:
     void chooseActions(Site* targetSite);
 
 signals:
@@ -26,14 +29,12 @@ private slots:
     void onCleanSite();
 
 private:
+    QPushButton* addAction(QIcon icon, QString title);
+
     Site* mTargetSite;
     Administration* mAdmin;
 
     QGroupBox* mActionsGroupbox;
-
-//    QPushButton* mBuildButton;
-//    QPushButton* mRepairButton;
-//    QPushButton* mCleanButton;
 
     QList<QPushButton*> mActions;
 };

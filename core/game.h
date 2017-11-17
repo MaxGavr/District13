@@ -10,19 +10,18 @@ class Game
 public:
     using EventQueue = std::forward_list<Event*>;
 
-    int getHappinessGoal() const;
+    Game(size_t districtSize, int happinessGoal, int startMoney, int maxIncome);
 
-    Game(int happinessGoal);
+    Administration* getAdministration() const { return mAdmin; }
+    int getHappinessGoal() const { return mHappinessGoal; }
 
-    Administration* getAdministration() const;
-
-    unsigned getTurn() const;
+    unsigned getTurn() const { return mTurn; }
     bool nextTurn();
 
     void restartGame();
     bool isGameOver() const;
 
-    EventQueue getExecutedEvents() const;
+    EventQueue getExecutedEvents() const { return mExecutedEvents; }
     void enqueueEvent(Event* event);
 
 private:
@@ -30,7 +29,6 @@ private:
 
     EventQueue mEvents;
     EventQueue mUserEvents;
-
     EventQueue mExecutedEvents;
 
     int mHappinessGoal;
