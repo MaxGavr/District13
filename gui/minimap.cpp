@@ -204,7 +204,7 @@ DistrictMinimapItem::DistrictMinimapItem(Site* site, DistrictMinimap* minimap)
     setFlat(true);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    connect(this, SIGNAL(clicked(bool)), minimap, SLOT(onSelectMinimapItem()));
+    connect(this, SIGNAL(clicked(bool)), minimap, SLOT(onClickMinimapItem()));
 }
 
 Site* DistrictMinimapItem::getSite() const

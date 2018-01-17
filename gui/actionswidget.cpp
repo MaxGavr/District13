@@ -21,6 +21,8 @@ ActionsWidget::ActionsWidget(Administration* admin, QWidget* parent)
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(mActionsGroupbox);
+
+    chooseActions(mTargetSite);
 }
 
 void ActionsWidget::setAdministration(Administration* admin)
@@ -36,7 +38,12 @@ void ActionsWidget::chooseActions(Site* targetSite)
     mTargetSite = targetSite;
 
     if (!mTargetSite)
+    {
+        hide();
         return;
+    }
+
+    show();
 
     QList<Event::Type> actionTypes = mAdmin->getAvailableActions(mTargetSite);
 

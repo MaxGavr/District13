@@ -11,5 +11,6 @@
         <file>repair.png</file>
         <file>crane.png</file>
         <file>broom.png</file>
+        <file>money.png</file>
     </qresource>
 </RCC>

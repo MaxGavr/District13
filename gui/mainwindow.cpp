@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QLabel>
+#include <QCloseEvent>
 
 
 MainWindow::MainWindow(Game* game, QWidget *parent)
@@ -85,6 +86,27 @@ void MainWindow::onSelectSite(Site* site)
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(tr("Конец игры"));
+    msgBox.setText(tr("Желаете закончить игру или начать заново?"));
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.addButton(tr("Закончить игру"), QMessageBox::RejectRole);
+    msgBox.addButton(tr("Начать заново"), QMessageBox::AcceptRole);
+
+    if (msgBox.exec() == QMessageBox::Rejected)
+    {
+        event->accept();
+        close();
+    }
+    else
+    {
+        event->ignore();
+        restart();
+    }
+}
+
 void MainWindow::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
@@ -108,6 +130,7 @@ void MainWindow::initializeWidgets()
 
     mLogWidget = new QTextEdit(tr("Добро пожаловать в Район №13!"));
     mLogWidget->setReadOnly(true);
+    mLogWidget->setFixedHeight(150);
 
     mNextTurnButton = new QPushButton(tr("Следующий ход"));
     mNextTurnButton->setToolTip(tr("Текущий ход - ") + QString::number(mGame->getTurn()));

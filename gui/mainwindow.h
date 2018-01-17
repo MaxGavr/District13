@@ -11,6 +11,7 @@ class QLabel;
 class GameInfoWidget;
 class SiteInfoDialog;
 class ActionsWidget;
+class QCloseEvent;
 
 class MainWindow : public QWidget
 {
@@ -30,6 +31,7 @@ public slots:
     void onSelectSite(Site* site);
 
 protected:
+    virtual void closeEvent(QCloseEvent *event);
     virtual void showEvent(QShowEvent *event);
 
 private:
